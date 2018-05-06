@@ -1,4 +1,5 @@
-var game = new Phaser.Game(window.innerWidth/1.4, window.innerHeight/1.4, Phaser.AUTO,'gameDiv' );
+//var game = new Phaser.Game(window.innerWidth/1.4, window.innerHeight/1.4, Phaser.AUTO);
+var game = new Phaser.Game(1200,700, Phaser.AUTO);
 
 // Add the game states
 game.state.add('boot', bootState);
