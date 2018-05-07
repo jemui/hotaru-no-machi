@@ -33,13 +33,15 @@ var loadState = {
 		game.load.spritesheet('title', 'assets/img/title.png', 270, 57);
 		game.load.image('bottom', 'assets/img/bar.png');
 		game.load.image('menu', 'assets/img/menu.png');
-		
+
 		game.load.image('player', 'assets/img/player.png');
 		game.load.image('shopkeeper', 'assets/img/shopkeeper.png');
 
-		// tutorial dialogue speech
-		game.load.json('speech', 'dialogue/tutorialSpeech.json');
-		game.load.image('dialogueBox', 'assets/img/dialogueBox.png');
+		// Load texture atlas
+		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
+
+		// Load audio
+		game.load.audio('bgm', ['assets/audio/bkgdMusic.wav'])
 	},
 
 	// goes to title state when the game is done loading
