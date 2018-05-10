@@ -41,7 +41,10 @@ var loadState = {
 		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
 
 		// Load audio
-		game.load.audio('bgm', ['assets/audio/bkgdMusic.wav'])
+		game.load.audio('bgm', ['assets/audio/bkgdMusic.wav']);
+		game.load.audio('depositFF', ['assets/audio/depositff.wav']);
+		game.load.audio('fillLamp', ['assets/audio/filledLamp.wav']);
+		game.load.audio('hitFF', ['assets/audio/hitFF.wav']);
 	},
 
 	// goes to title state when the game is done loading

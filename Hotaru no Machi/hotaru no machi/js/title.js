@@ -1,6 +1,7 @@
 var titleState = {
 	// goes to title state when the game is done loading
 	create: function() {
+
 		// set the background color 
 		game.stage.setBackgroundColor('#403C38');
 
