@@ -36,15 +36,19 @@ var loadState = {
 
 		game.load.image('player', 'assets/img/player.png');
 		game.load.image('shopkeeper', 'assets/img/shopkeeper.png');
+		game.load.image('light', 'assets/img/light.png');
+		game.load.image('bound', 'assets/img/bound.png');
 
 		// Load texture atlas
 		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
+		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
 
 		// Load audio
 		game.load.audio('bgm', ['assets/audio/bkgdMusic.wav']);
 		game.load.audio('depositFF', ['assets/audio/depositff.wav']);
 		game.load.audio('fillLamp', ['assets/audio/filledLamp.wav']);
 		game.load.audio('hitFF', ['assets/audio/hitFF.wav']);
+		game.load.audio('fillStreet', ['assets/audio/hitFF.wav']);	
 	},
 
 	// goes to title state when the game is done loading

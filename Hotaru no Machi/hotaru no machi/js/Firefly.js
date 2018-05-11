@@ -1,5 +1,5 @@
 function Firefly(game){
-	Phaser.Sprite.call(this,game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'assets', 'firefly');
+	Phaser.Sprite.call(this, game, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'assets', 'firefly');
 
 }
 // explicitly define prefab's prototype (Phaser.Sprite) and constructor (Armada)
