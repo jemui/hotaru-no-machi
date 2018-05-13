@@ -11,6 +11,10 @@ WebFontConfig = {
       families: ['Advent Pro']
     }
 }
+// needed for webFontConfig
+function createText() {
+}
+
 var lives = 5; 
 var loadState = {
 	preload: function () {
@@ -56,7 +60,3 @@ var loadState = {
 		game.state.start('title');
 	}, 
 };
-
-function createText() {
-   //text = game.add.text(game.world.centerX, game.world.centerY, "- phaser -\nrocking with\ngoogle web fonts");
-}
