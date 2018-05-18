@@ -9,8 +9,6 @@ var tutorialState = {
 	create: function() {
 		var background = game.add.sprite(0,-165, 'fAssets', 'breakfastBar');
 
-
-
 		// sound effects
 		collectFF = game.add.audio('hitFF');
 		fillLamp = game.add.audio('fillLamp');
@@ -43,7 +41,7 @@ var tutorialState = {
 		this.bound = objects.create(0, game.world.height-165, 'bound');
 		this.bound.body.immovable = true; 
 
-		this.boundTop = objects.create(0, game.world.centerY-150, 'bound');
+		this.boundTop = objects.create(0, game.world.centerY-140, 'bound');
 		this.boundTop.body.immovable = true; 
 
 		// Bottom GUI
@@ -77,14 +75,18 @@ var tutorialState = {
 	},
 	dialogueOnClick: function() {
 		// Array of dialogue
-		var speech = ['Welcome! You must be confused after what happened. Let me help refresh\nyour memory.', 'You can use the arrow keys to move around.', 'I have a big request to make of you.', //3
-						'I have a big request to make of you.\nYou see..', 'The town has lost its source of power.', //2
+		var speech = ['Welcome! You must be confused after what happened. Let me help refresh\nyour memory. You see..', 'The town has lost its source of power and is currently dark.', //2
 						'To make the town bright again, we need to fill up all the street lamps with a\npower source.','That power source would be the fireflies scattered all around town.', //2
-						'Here is a lantern that can hold up to 5 fireflies.', 'Here is a lantern that can hold up to 5 fireflies.\nYou just need to walk up to them to collect it.', //2
+						'We have a big request to make of you. We hope that you can go around\nthe town and light up all the street lamps.', 'The main power source of the town is connected to these street lamps.', //3
+						'Once all the street lamps are lit, power will be restored to town.',  //1
+						'Here is a lantern that can hold up to 5 fireflies.', 'Here is a lantern that can hold up to 5 fireflies.\nYou just need to walk up to them using the arrow keys to collect it.', //2
 						'Look! One appears to have flown inside the shop!\nTry collecting it!', 'Nice! You caught your first firefly! If you come across any streetlamps\nin town,press F to fill it up.', //2
 						'10 (5 is temp right now) fireflies are needed to completely fill a street lamp up!', 'If you run into an enemy, press A to attack it using fireflies!\nYou can return here by pressing W in front of our door in town.', 'Also, for every street lamp filled, your field of vision will expand as the town\ngets brighter.',
 						'Move towards the light (go right) to exit to the town.\nFeel free to drop by our shop for more supplies! Good luck!']; 
 
+		if(current == 7) {
+			collectFF.play();
+		}
 		// current = 10 starts the collection tutorial
 		if(current < speech.length) 
 	   		this.dialogue.text = speech[current];
@@ -105,7 +107,6 @@ var tutorialState = {
 		resumeButton.anchor.set(0.5);
 		resumeButton.onInputOver.add(this.over, this.resumeButton);
 		resumeButton.onInputOut.add(this.out, this.resumeButton);
-		//	resumeButton.alpha = 0;
 
 		var returntoTitle = game.add.button(game.world.centerX, game.world.centerY+80, 'title', this.titleOnClick, this);
 		returntoTitle.anchor.set(0.5);
@@ -220,7 +221,6 @@ var tutorialState = {
 	    }
 
 	    // Arrow keys to move player
-
 	    if (cursors.up.isDown)
 	    	this.player.body.velocity.y -= 500;	// Move up
 	    if (cursors.down.isDown) 

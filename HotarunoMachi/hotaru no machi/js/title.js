@@ -18,7 +18,7 @@ var titleState = {
 		creditsButton.onInputOut.add(this.out, this.creditsButton);
 
 		// streetlamp
-		streetLamp = game.add.sprite(game.world.width-300, game.world.height-250, 'assets', 'streetLamp');
+		this.streetLamp = game.add.sprite(game.world.width-300, game.world.height-250, 'fAssets', 'streetLampDark');
 
 		//center is 600 x 350. Start next to machi and fly to bottom right corner  
 		firefly = game.add.sprite(game.world.centerX, game.world.centerY, 'fAssets', 'firefly');
@@ -31,10 +31,14 @@ var titleState = {
 		this.timer.loop(5500, this.light, this);
 		this.timer.start();
 
-		var visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000014');
+		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000014');
+		this.visionVisibility.animations.add('light', ['gradient_000015','gradient_000016'], 5, true);
 	},
 	light: function() {
-		this.light = game.add.sprite(game.world.width-300, game.world.height-250, 'light');
+		streetLampLit = game.add.sprite(game.world.width-300, game.world.height-250, 'fAssets', 'streetLampLit');
+		this.visionVisibility.play('light');
+		this.streetLamp.kill();
+		this.timer.stop();
 	},
 
 	over: function(button) {
@@ -48,8 +52,8 @@ var titleState = {
 	actionOnClick: function() {
 		game.state.start('tutorial'); //should add option to skip tutorial later
 		music = game.add.audio('bgm');
-		music.loopFull(0.3);
-		music.play();
+		//music.loopFull(0.3);
+		//music.play();
 	},
 	// Credits button action
 	actionOnClick2: function() {
