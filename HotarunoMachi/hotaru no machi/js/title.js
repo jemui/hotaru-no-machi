@@ -52,8 +52,8 @@ var titleState = {
 	actionOnClick: function() {
 		game.state.start('tutorial'); //should add option to skip tutorial later
 		music = game.add.audio('bgm');
-		//music.loopFull(0.3);
-		//music.play();
+		music.loopFull(0.3);
+		music.play();
 	},
 	// Credits button action
 	actionOnClick2: function() {

@@ -42,6 +42,11 @@ var playState = {
 		this.boundTop.body.immovable = true; 
 		this.boundTop.fixedToCamera = true;
 
+		this.leftBound = bounds.create(-100, game.world.centerY+100, 'spriteBounds'); 
+		this.leftBound.body.immovable = true;
+
+		this.rightBound = bounds.create(2400, game.world.centerY+100, 'spriteBounds'); 
+		this.rightBound.body.immovable = true;
 		// Sprite Bounds
 		// this.spriteBounds = bounds.create(50, game.world.centerY+100, 'spriteBounds'); 
 		// this.spriteBounds.body.immovable = true;
@@ -298,8 +303,10 @@ var playState = {
   		game.physics.arcade.overlap(this.player, this.streetLamp, this.fillStreetLamp, null, this);
   		//game.physics.arcade.overlap(this.player, this.light, this.town, null, this);	// fix later
 	    game.physics.arcade.collide(this.player, this.bottomGUI);
-	    game.physics.arcade.collide(this.player, this.bound);
-	    game.physics.arcade.collide(this.player, this.boundTop);
+	    
+	    game.physics.arcade.collide(this.player, bounds);
+	  //  game.physics.arcade.collide(this.player, this.bound);
+	   // game.physics.arcade.collide(this.player, this.boundTop);
 	    game.physics.arcade.overlap(this.player, enemies, this.health, null, this);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
 

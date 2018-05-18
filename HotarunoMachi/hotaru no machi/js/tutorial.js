@@ -4,6 +4,7 @@ var playerFF = 0; // for console.log
 var faceRight = true;
 var full = false; 
 var tutSpawned = false; // tutorial spawned firefly
+var timesVisited = 0;
 
 var tutorialState = {
 	create: function() {
@@ -20,15 +21,7 @@ var tutorialState = {
 		object = game.add.group(); 
 		object.enableBody = true; 
 
-		//this.spawnFirefly(5);
-
-		// avoid reappearing when revising this state
-		if(current == 0) {
-			this.dialogue = game.add.text(50, game.world.height-155, "Welcome! <Hit the space bar for more text>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-			this.dialogue.alpha = 0;
-	    	game.add.tween(this.dialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
-    	}
-
+	    // Boundary Group
 		objects = game.add.group(); 
 		objects.enableBody = true; 
 
@@ -37,12 +30,18 @@ var tutorialState = {
 		this.bottomGUI.body.immovable = true; 
 		this.bottomGUI.aplha = 0;
 		game.add.tween(this.bottomGUI).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, false);
+
 		// Set up bounds
 		this.bound = objects.create(0, game.world.height-165, 'bound');
 		this.bound.body.immovable = true; 
 
 		this.boundTop = objects.create(0, game.world.centerY-140, 'bound');
 		this.boundTop.body.immovable = true; 
+
+		this.leftBound = objects.create(-100, game.world.centerY+100, 'spriteBounds'); 
+		this.leftBound.body.immovable = true;
+
+
 
 		// Bottom GUI
 		this.bottomGUI.scale.setTo(2,1);
@@ -63,25 +62,49 @@ var tutorialState = {
 		this.light.aplha = 0;
 		game.add.tween(this.light).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
 
-		// Add player 
-		this.player = game.add.sprite(game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001');
-		this.player.anchor.set(0.5);
-		this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-		this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
-		game.physics.arcade.enable(this.player); // Enable physics on the player
+		// avoid reappearing when revising this state
+		if(timesVisited == 0) {
+			// will be deleted after tutorial
+			this.rightBound = objects.create(game.width, game.world.centerY+100, 'spriteBounds'); 
+			this.rightBound.body.immovable = true;
+			
+			this.dialogue = game.add.text(50, game.world.height-155, "Welcome! <Hit the space bar for more text>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			this.dialogue.alpha = 0;
+	    	game.add.tween(this.dialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
+
+			// Add player 
+			this.player = game.add.sprite(game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001');
+			this.player.anchor.set(0.5);
+			this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
+			this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+			game.physics.arcade.enable(this.player); // Enable physics on the player
+    	} else {
+
+			// Add player 
+			this.player = game.add.sprite(game.width-151, game.world.centerY+80, 'fAssets', 'playerSprite0001');
+			this.player.anchor.set(0.5);
+			this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
+			this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+			game.physics.arcade.enable(this.player); // Enable physics on the player
+
+			this.shopDialogue = game.add.text(50, game.world.height-155, "Welcome back!", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			this.shopDialogue.alpha = 0;
+	    	game.add.tween(this.dialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
+    	}
+    	timesVisited++;
 	},
 	light: function(x,y) {
 		var light = game.add.sprite(x,y, 'light');
 	},
 	dialogueOnClick: function() {
-		// Array of dialogue
+		// Array of dialogue. **10 fireflies will be needed later**
 		var speech = ['Welcome! You must be confused after what happened. Let me help refresh\nyour memory. You see..', 'The town has lost its source of power and is currently dark.', //2
 						'To make the town bright again, we need to fill up all the street lamps with a\npower source.','That power source would be the fireflies scattered all around town.', //2
 						'We have a big request to make of you. We hope that you can go around\nthe town and light up all the street lamps.', 'The main power source of the town is connected to these street lamps.', //3
 						'Once all the street lamps are lit, power will be restored to town.',  //1
 						'Here is a lantern that can hold up to 5 fireflies.', 'Here is a lantern that can hold up to 5 fireflies.\nYou just need to walk up to them using the arrow keys to collect it.', //2
 						'Look! One appears to have flown inside the shop!\nTry collecting it!', 'Nice! You caught your first firefly! If you come across any streetlamps\nin town,press F to fill it up.', //2
-						'10 (5 is temp right now) fireflies are needed to completely fill a street lamp up!', 'If you run into an enemy, press A to attack it using fireflies!\nYou can return here by pressing W in front of our door in town.', 'Also, for every street lamp filled, your field of vision will expand as the town\ngets brighter.',
+						'5 fireflies are needed to completely fill a street lamp up!', 'If you run into an enemy, press A to attack it using fireflies!\nYou can return here by pressing W in front of our door in town.', 'Also, for every street lamp filled, your field of vision will expand as the town\ngets brighter.',
 						'Move towards the light (go right) to exit to the town.\nFeel free to drop by our shop for more supplies! Good luck!']; 
 
 		if(current == 7) {
@@ -90,11 +113,13 @@ var tutorialState = {
 		// current = 10 starts the collection tutorial
 		if(current < speech.length) 
 	   		this.dialogue.text = speech[current];
-		 else 
-			console.log('No more dialogue left');
+		 else {
+			this.dialogue.text = 'Head towards the light!';
+		}
 		
 		current++;
-		
+	    if(current == speech.length) 
+	    	this.rightBound.kill();
 	},
 
 	actionOnClick: function() {
@@ -165,8 +190,9 @@ var tutorialState = {
   			playerFF--;
   		}
 	    game.physics.arcade.collide(this.player, this.bottomGUI);
-	    game.physics.arcade.collide(this.player, this.bound);
-	    game.physics.arcade.collide(this.player, this.boundTop);
+	    game.physics.arcade.collide(this.player, objects);
+	    //game.physics.arcade.collide(this.player, this.bound);
+	    //game.physics.arcade.collide(this.player, this.boundTop);
 
 	    // Reset the players velocity (movement)
 	    this.player.body.velocity.x = 0;
@@ -203,7 +229,7 @@ var tutorialState = {
 			game.add.tween(this.firefly).to( { y: game.world.centerY+75 }, 5500, Phaser.Easing.Linear.None, true, game.world.centerY+65, 5500, Phaser.Easing.Linear.None, true);
 	    }
 
-	    if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+	    if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && timesVisited == 1) {
 	    	// tutorial if
 	    	if(current == 10 && fireflies < 1) 
 	    		this.dialogue.text = 'Walk up to the firefly to collect it!';
