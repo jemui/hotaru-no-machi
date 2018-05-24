@@ -60,7 +60,7 @@ var titleState = {
 		console.log('To Be Implemented');
 	},
 	update: function() {
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.P)) {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.Q)) {
 			game.state.start('play');
 		}
 	},

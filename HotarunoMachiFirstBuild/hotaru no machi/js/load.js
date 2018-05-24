@@ -42,17 +42,19 @@ var loadState = {
 		game.load.image('shopkeeper', 'assets/img/shopkeeper.png');
 		game.load.image('light', 'assets/img/light.png');
 		game.load.image('bound', 'assets/img/bound.png');
+		game.load.image('spriteBounds', 'assets/img/spriteBounds.png');
 
 		// Load texture atlas
 		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
 		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
+		game.load.atlas('fAssets', 'assets/img/FinalArtAssets.png', 'assets/img/FinalArtAssets.json');
 
 		// Load audio
-		game.load.audio('bgm', ['assets/audio/bkgdMusic.wav']);
-		game.load.audio('depositFF', ['assets/audio/depositff.wav']);
-		game.load.audio('fillLamp', ['assets/audio/filledLamp.wav']);
-		game.load.audio('hitFF', ['assets/audio/hitFF.wav']);
-		game.load.audio('fillStreet', ['assets/audio/hitFF.wav']);	
+		game.load.audio('bgm', ['assets/audio/bkgdMusic.ogg']);
+		game.load.audio('depositFF', ['assets/audio/depositff.ogg']);
+		game.load.audio('fillLamp', ['assets/audio/filledLamp.ogg']);
+		game.load.audio('hitFF', ['assets/audio/hitFF.ogg']);
+		game.load.audio('fillStreet', ['assets/audio/hitFF.ogg']);	
 	},
 
 	// goes to title state when the game is done loading

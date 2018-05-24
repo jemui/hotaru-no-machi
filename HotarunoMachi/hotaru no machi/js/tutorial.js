@@ -5,6 +5,7 @@ var faceRight = true;
 var full = false; 
 var tutSpawned = false; // tutorial spawned firefly
 var timesVisited = 0;
+var last = 'Shop'; 
 
 var tutorialState = {
 	create: function() {
@@ -50,7 +51,7 @@ var tutorialState = {
 		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+' Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
 
 		// Pause Button
-		var pauseButton =  game.add.button(game.world.width-32, game.world.height-32, 'pause', this.actionOnClick, this);
+		var pauseButton =  game.add.button(game.world.width-32, game.world.height-32, 'pause', pauseGame, this);
 		pauseButton.anchor.set(0.5);
 		pauseButton.scale.setTo(0.5);
 		pauseButton.onInputOver.add(this.over, this.pauseButton);
@@ -67,7 +68,7 @@ var tutorialState = {
 			// will be deleted after tutorial
 			this.rightBound = objects.create(game.width, game.world.centerY+100, 'spriteBounds'); 
 			this.rightBound.body.immovable = true;
-			
+
 			this.dialogue = game.add.text(50, game.world.height-155, "Welcome! <Hit the space bar for more text>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			this.dialogue.alpha = 0;
 	    	game.add.tween(this.dialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
@@ -107,6 +108,16 @@ var tutorialState = {
 						'5 fireflies are needed to completely fill a street lamp up!', 'If you run into an enemy, press A to attack it using fireflies!\nYou can return here by pressing W in front of our door in town.', 'Also, for every street lamp filled, your field of vision will expand as the town\ngets brighter.',
 						'Move towards the light (go right) to exit to the town.\nFeel free to drop by our shop for more supplies! Good luck!']; 
 
+		if(current == 0) {
+			next = game.add.text(game.world.width-40, game.world.height-90, '▼', {font: '20px Advent Pro', fill: '#FFEDE5'}); 
+			next.alpha = 0;
+	    	game.add.tween(next).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+		} 
+		else if(current+1 == speech.length) {
+			next.alpha = 0;
+			next.kill();
+		}
+
 		if(current == 7) {
 			collectFF.play();
 		}
@@ -118,26 +129,14 @@ var tutorialState = {
 		}
 		
 		current++;
-	    if(current == speech.length) 
+	    if(current == speech.length) {
 	    	this.rightBound.kill();
+	    }
 	},
 
-	actionOnClick: function() {
-		// Pause Menu
-		var pauseMenu = game.add.sprite(game.world.centerX, game.world.centerY, 'menu');
-		pauseMenu.anchor.set(0.5);
-
-		// Resume and Title Buttons
-		var resumeButton = game.add.button(game.world.centerX, game.world.centerY-10, 'resume', this.resumeOnClick, this);
-		resumeButton.anchor.set(0.5);
-		resumeButton.onInputOver.add(this.over, this.resumeButton);
-		resumeButton.onInputOut.add(this.out, this.resumeButton);
-
-		var returntoTitle = game.add.button(game.world.centerX, game.world.centerY+80, 'title', this.titleOnClick, this);
-		returntoTitle.anchor.set(0.5);
-		returntoTitle.onInputOver.add(this.over, this.returntoTitle);
-		returntoTitle.onInputOut.add(this.out, this.returntoTitle);
-	},
+	// actionOnClick: function() {
+	// 	pauseGame();
+	// },
 
 	spawnFirefly: function(n) {
 		for(var i = 0; i < n; i++ ){
@@ -147,14 +146,15 @@ var tutorialState = {
 		}
 	},
 
-	resumeOnClick: function(){
-		music.stop();
-		game.state.start('tutorial');	// Update to just remove the menu 
-	},
-	titleOnClick: function(){
-		music.stop();
-		game.state.start('title');
-	},
+	// resumeOnClick: function(){
+	// 	music.stop();
+	// 	//game.state.start('tutorial');	// Update to just remove the menu 
+	// 	pauseGame();
+	// },
+	// titleOnClick: function(){
+	// 	music.stop();
+	// 	game.state.start('title');
+	// },
 
 	over: function(button) {
     	button.frame = 1;
@@ -171,7 +171,7 @@ var tutorialState = {
 		playerFF = fireflies; 
 		if(fireflies == 5) {
 			full = true;
-				console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
+			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
 		//console.log(playerFF);
 		this.firefliesCaught.text = fireflies+' Fireflies Caught';	// update text

@@ -38,8 +38,8 @@ var loadState = {
 		game.load.image('bottom', 'assets/img/bar.png');
 		game.load.image('menu', 'assets/img/menu.png');
 
-		game.load.image('player', 'assets/img/player.png');
-		game.load.image('shopkeeper', 'assets/img/shopkeeper.png');
+		// game.load.image('player', 'assets/img/player.png');
+		// game.load.image('shopkeeper', 'assets/img/shopkeeper.png');
 		game.load.image('light', 'assets/img/light.png');
 		game.load.image('bound', 'assets/img/bound.png');
 		game.load.image('spriteBounds', 'assets/img/spriteBounds.png');
@@ -55,6 +55,10 @@ var loadState = {
 		game.load.audio('fillLamp', ['assets/audio/filledLamp.ogg']);
 		game.load.audio('hitFF', ['assets/audio/hitFF.ogg']);
 		game.load.audio('fillStreet', ['assets/audio/hitFF.ogg']);	
+
+		game.load.audio('enemyDies', ['assets/audio/enemyDies.ogg']);
+		game.load.audio('hitEnemy', ['assets/audio/hitEnemy.ogg']);
+		game.load.audio('shootFF', ['assets/audio/shootFF.ogg']);	
 	},
 
 	// goes to title state when the game is done loading

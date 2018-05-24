@@ -83,3 +83,85 @@ var bootState = {
 	},
 
 }
+// bind pause key to browser window event
+window.onkeydown = function(event) {
+	// capture keycode (event.which for Firefox compatibility)
+	var keycode = event.keyCode || event.which;	
+	if(keycode === Phaser.Keyboard.P) {
+		pauseGame();
+		// if(game.paused == true) {
+		// 	this.pauseMenu.alpha = 1;
+		// 	this.resumeButton.alpha = 1;
+		// 	this.returntoTitle.alpha =1; 
+		// }
+	}
+}
+
+function pauseGame() {
+	// toggle game pause
+	game.paused ? game.paused = false : game.paused = true;
+	console.log(game.paused);
+
+	// Pause Menu
+	this.pauseMenu = game.add.sprite(game.world.centerX, game.world.centerY, 'menu');
+	this.pauseMenu.anchor.set(0.5);
+	this.pauseMenu.alpha = 0; 
+
+	// Resume and Title Buttons
+	this.resumeButton = game.add.button(game.world.centerX, game.world.centerY-10, 'resume', resumeOnClick, this);
+	this.resumeButton.anchor.set(0.5);
+	this.resumeButton.onInputOver.add(this.over, this.resumeButton);
+	this.resumeButton.onInputOut.add(this.out, this.resumeButton);
+	this.resumeButton.alpha = 0; 
+
+	this.returntoTitle = game.add.button(game.world.centerX, game.world.centerY+80, 'title', titleOnClick, this);
+	this.returntoTitle.anchor.set(0.5);
+	this.returntoTitle.onInputOver.add(this.over, this.returntoTitle);
+	this.returntoTitle.onInputOut.add(this.out, this.returntoTitle);
+	this.returntoTitle.alpha = 0; 
+
+	if(game.paused == true) {
+		this.pauseMenu.alpha = 1;
+		this.resumeButton.alpha = 1;
+		this.returntoTitle.alpha =1; 
+	}
+}
+
+// function resumeOnClick(){
+// 	console.log(game.paused);
+// 	pauseGame();
+// }
+
+function resumeOnClick(){
+	// Make menu invisible and toggle pause state
+	this.pauseMenu.alpha = 0;
+	this.resumeButton.alpha = 0;
+	this.returntoTitle.alpha = 0; 
+
+	game.paused ? game.paused = false : game.paused = true;
+}
+
+function titleOnClick(){
+	game.paused ? game.paused = false : game.paused = true;
+//	pauseGame();
+	game.state.start('title');
+
+	//reset all variables
+	music.stop();
+    current = 0;   // current dialogue
+    fireflies = 0;  // number of fireflies the player has
+    playerFF = 0; // for console.log
+    faceRight = true;
+    full = false; 
+    tutSpawned = false; // tutorial spawned firefly
+    timesVisited = 0;
+
+}
+
+function over(button) {
+   button.frame = 1;
+}
+
+function out(button) {
+    button.frame = 0;
+}
