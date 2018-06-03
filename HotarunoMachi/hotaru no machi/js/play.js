@@ -422,7 +422,7 @@ var playState = {
 	    	faceRight = true;
 	    	//music.stop();
 	    }
-				//game.time.events.add(Phaser.Timer.SECOND * 10, this.spawnFirefly(game.rnd.integerInRange(5,7)), this);
+
   		// if( game.physics.arcade.overlap(enemies, this.SpriteBoundsRight))
 	   //  	this.enemy.animations.play('left');
 	   //  else if( game.physics.arcade.overlap(enemies, this.SpriteBounds))

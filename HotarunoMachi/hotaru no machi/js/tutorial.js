@@ -194,7 +194,7 @@ var tutorialState = {
 	    this.player.body.velocity.y = 0;
 
 	    if(timesVisited > 1 && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
-	    	this.shopDialogue.text = 'Hit the space bar again to close the shop menu!\n(Not working at the moment)'; 
+	    	this.shopDialogue.text = 'Use the number keys (1-3) to buy your desired item.\nHit the space bar again to close the shop menu!'; 
 	    	this.shopMenu = game.add.sprite(game.world.centerX, game.world.centerY-75, 'shopMenu');
 	    	this.shopMenu.anchor.set(0.5);
 	    	showMenu = true; 
