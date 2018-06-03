@@ -8,5 +8,7 @@ game.state.add('title', titleState);
 game.state.add('tutorial', tutorialState);
 game.state.add('play', playState);
 game.state.add('town', townState);
+game.state.add('townLeft', townLeftState);
+game.state.add('end', endState);
 
 game.state.start('boot');

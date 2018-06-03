@@ -8,7 +8,7 @@ WebFontConfig = {
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
-      families: ['Advent Pro']
+      families: ['Advent Pro', 'Indie Flower']
     }
 }
 // needed for webFontConfig
@@ -23,13 +23,16 @@ var loadState = {
 		game.scale.refresh();
 
 		var loadingText = game.add.text(game.world.centerX, game.world.centerY, 'Loading...', {font: '40px Cambria', fill: '#033E54', align: 'center'});
-	
+		loadingText.anchor.set(0.5);
+
 	    //  Load the Google WebFont Loader script
     	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 		
 		// title screen buttons
-		game.load.spritesheet('start', 'assets/img/startSpritesheet.png', 317, 74);
-		game.load.spritesheet('credits', 'assets/img/credits.png', 317, 72);
+		game.load.image('start', 'assets/img/startButton.png');
+		game.load.image('credits', 'assets/img/creditsButton.png');
+	
+		//game.load.spritesheet('credits', 'assets/img/credits.png', 317, 72);
 
 		//  pause menu buttons
 		game.load.spritesheet('pause', 'assets/img/pause.png', 71, 71);
@@ -39,15 +42,17 @@ var loadState = {
 		game.load.image('menu', 'assets/img/menu.png');
 
 		// game.load.image('player', 'assets/img/player.png');
-		// game.load.image('shopkeeper', 'assets/img/shopkeeper.png');
+		game.load.image('shopMenu', 'assets/img/shopMenu.png');
 		game.load.image('light', 'assets/img/light.png');
 		game.load.image('bound', 'assets/img/bound.png');
 		game.load.image('spriteBounds', 'assets/img/spriteBounds.png');
+		game.load.image('splashScreen', 'assets/img/splashScreen.png');
 
 		// Load texture atlas
 		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
 		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
 		game.load.atlas('fAssets', 'assets/img/FinalArtAssets.png', 'assets/img/FinalArtAssets.json');
+	//	game.load.atlas('splashScreen', 'assets/img/titleScreen.png', 'assets/img/titleScreen.json');
 
 		// Load audio
 		game.load.audio('bgm', ['assets/audio/bkgdMusic.ogg']);

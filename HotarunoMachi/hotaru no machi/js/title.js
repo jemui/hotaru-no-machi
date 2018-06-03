@@ -2,29 +2,25 @@ var titleState = {
 	// goes to title state when the game is done loading
 	create: function() {
 		// set the background color 
-		game.stage.setBackgroundColor('#403C38');
+		//game.stage.setBackgroundColor('#403C38');
+		spashScreen = game.add.sprite(0,0, 'splashScreen');
 
-		var title = game.add.text(game.world.centerX/3, game.world.centerY/4, 'Hotaru no Machi', {font: '40px Advent Pro', fill: '#E5D9C9'});
-		title.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
-		var lineDec = game.add.text(game.world.centerX/3+35, game.world.centerY/4+15, '_____________________', {font: '40px Advent Pro', fill: '#E5D9C9'});
-		lineDec.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
-
-		var startButton = game.add.button(game.world.center-100, game.world.centerY/2, 'start', this.actionOnClick, this);
+		var startButton = game.add.button(155, game.world.centerY/2+160, 'start', this.actionOnClick, this);
 		startButton.onInputOver.add(this.over, this.startButton);
 		startButton.onInputOut.add(this.out, this.startButton);
 
-		var creditsButton = game.add.button(game.world.center-100, game.world.centerY/2+80, 'credits', this.actionOnClick2, this);
+		var creditsButton = game.add.button(155, game.world.centerY/2+240, 'credits', this.actionOnClick2, this);
 		creditsButton.onInputOver.add(this.over, this.creditsButton);
 		creditsButton.onInputOut.add(this.out, this.creditsButton);
 
 		// streetlamp
-		this.streetLamp = game.add.sprite(game.world.width-300, game.world.height-250, 'fAssets', 'streetLampDark');
+		this.streetLamp = game.add.sprite(game.world.centerX, game.world.height-450, 'fAssets', 'streetLampDark');
 
 		//center is 600 x 350. Start next to machi and fly to bottom right corner  
-		firefly = game.add.sprite(game.world.centerX, game.world.centerY, 'fAssets', 'firefly');
+		firefly = game.add.sprite(game.world.centerX-200, game.world.centerY-200, 'fAssets', 'singleFirefly');
 		firefly.scale.x *= -1;
-		game.add.tween(firefly).to( { x: game.world.centerX+360 }, 5500, Phaser.Easing.Linear.None, true);
-		game.add.tween(firefly).to( { y: game.world.centerY+80 }, 4500, Phaser.Easing.Linear.None, true);
+		game.add.tween(firefly).to( { x: game.world.centerX+50 }, 5500, Phaser.Easing.Linear.None, true);
+		game.add.tween(firefly).to( { y: game.world.centerY-100 }, 4500, Phaser.Easing.Linear.None, true);
 
 		// setup difficulty timer
 		this.timer = game.time.create(false);	// .create(autoDestroy)
@@ -35,18 +31,21 @@ var titleState = {
 		this.visionVisibility.animations.add('light', ['gradient_000015','gradient_000016'], 5, true);
 	},
 	light: function() {
-		streetLampLit = game.add.sprite(game.world.width-300, game.world.height-250, 'fAssets', 'streetLampLit');
+		streetLampLit = game.add.sprite(game.world.centerX, game.world.height-450, 'fAssets', 'streetLampLit');
 		this.visionVisibility.play('light');
 		this.streetLamp.kill();
 		this.timer.stop();
 	},
 
 	over: function(button) {
-    	button.frame = 1;
+		//button.tint = 0x6D5B5B;
+		button.alpha = 0.7;
+    //	button.frame = 1;
 	},
 
 	out: function(button) {
-    	button.frame = 0;
+    	//button.frame = 0;
+		button.alpha = 1;
 	},
 	// start button action
 	actionOnClick: function() {

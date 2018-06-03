@@ -13,8 +13,11 @@ var playState = {
 	create: function() {
     	game.world.setBounds(0, 0, 2400, 700); // set bound of the game world. (x, y, width, height). Source: Phaser Tutorial
 
-		this.background = game.add.sprite(0, -764, 'fAssets', 'worldBackground');
-		this.background.scale.setTo(2,2);
+		this.background = game.add.sprite(0, -64, 'fAssets', 'shopExterior');
+		this.background = game.add.sprite(2400, -32, 'fAssets', 'townBackground');
+		this.background.scale.x *= -1;
+		//this.background.anchor.set(0.5); 
+	//	this.background.scale.setTo(2,2);
 		//this.background = game.add.sprite(1200, -764, 'fAssets', 'worldBackground');
 		//this.background.scale.setTo(2,2);
 
@@ -58,6 +61,8 @@ var playState = {
 		streetLampGroup = game.add.group();
 		streetLampGroup.enableBody = true; 
 
+
+
 		if(townVisited < 1) {
 			this.spawnStreetLamp();
 			this.spawnFirefly(game.rnd.integerInRange(5,7));
@@ -70,6 +75,9 @@ var playState = {
 			fillInstruct.alpha = 0;
 	    	game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 		
+			portalEntranceSignal = game.add.text(game.world.centerX+850, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			portalEntranceSignal.alpha = 0;
+	    	game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 		} 
 		// if town streetlamp is already lit, keep it on
 		else if(townVisited >= 0 && townLampLit == true) {
@@ -80,6 +88,8 @@ var playState = {
 		}
 
 
+
+
 		// Enemy group 
 		enemies = game.add.group();
 		enemies.enableBody = true;
@@ -87,15 +97,32 @@ var playState = {
 		if (townEnemy == false)
 			this.spawnEnemy(1);
 
+		// Portals
 		portal = game.add.group();
 		portal.enableBody = true;
-		this.portalToShop = portal.create(game.world.centerX+250, game.world.centerY, 'light');
+		//this.portalToShop = portal.create(game.world.centerX+250, game.world.centerY, 'light');
+		this.portalToShop = portal.create(230, game.world.centerY+30, 'fAssets', 'portal');
+		this.portalToShop.scale.set(0.5);
+		this.portalToShop.alpha = 1;
+		game.add.tween(this.portalToShop).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
 
-		//this.portalToTown2 = portal.create(game.world.centerX, game.world.centerY, 'fAssets', 'portal');
+
 		this.portalToTown2 = portal.create(game.world.centerX+850, game.world.centerY-30, 'fAssets', 'portal');
+		game.add.tween(this.portalToTown2).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
+
+
+		this.portalToTownLeft = portal.create(30, game.world.centerY+20, 'fAssets', 'portal');
+		this.portalToTownLeft.alpha = 1;
+		this.portalToTownLeft.scale.set(0.7);
+		game.add.tween(this.portalToTownLeft).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
+
 
 		//PlayerSprite
-		if(last != 'Town2') {
+		if (last == 'townLeft') {
+			this.player = game.add.sprite(150, game.world.height-175, 'fAssets', 'playerSprite0001');
+		} else if( last == 'Shop') 
+			this.player = game.add.sprite(150, game.world.height-175, 'fAssets', 'playerSprite0001');
+		else if(last != 'town2') {
 			this.player = game.add.sprite(1530, game.world.height-175, 'fAssets', 'playerSprite0001');
 		} else {
 			this.player = game.add.sprite(2160, game.world.height-175, 'fAssets', 'playerSprite0001');
@@ -120,8 +147,45 @@ var playState = {
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
 		this.visionVisibility.fixedToCamera = true;
 
+
 		this.visionVisibility.animations.add('first', ['gradient_000001', 'gradient_000002', 'gradient_000003', 'gradient_000004'], 30, true);
 		this.visionVisibility.animations.add('second', ['gradient_000005', 'gradient_000006', 'gradient_000007', 'gradient_000008'], 30, true);
+		this.visionVisibility.animations.add('third', ['gradient_000009', 'gradient_000010', 'gradient_000011', 'gradient_000012'], 30, true);
+		this.visionVisibility.animations.add('fourth', ['gradient_000013', 'gradient_000014', 'gradient_000015', 'gradient_000016'], 30, true);
+		this.visionVisibility.animations.add('fifth', ['gradient_000017', 'gradient_000018', 'gradient_000019', 'gradient_000020'], 30, true);
+		this.visionVisibility.animations.add('sixth', ['gradient_000021', 'gradient_000022', 'gradient_000023', 'gradient_000024'], 30, true);
+		this.visionVisibility.animations.add('seventh', ['gradient_000025', 'gradient_000026', 'gradient_000027', 'gradient_000028'], 30, true);
+
+		if (litStreetLamps == 1)
+			this.visionVisibility.animations.play('first', 5, false);
+		else if(litStreetLamps == 2)
+			this.visionVisibility.animations.play('second', 5, false);
+		else if(litStreetLamps == 3)
+			this.visionVisibility.animations.play('third', 5, false);
+		else if(litStreetLamps == 4)
+			this.visionVisibility.animations.play('fourth', 5, false);
+		else if(litStreetLamps == 5)
+			this.visionVisibility.animations.play('fifth', 5, false);
+		else if(litStreetLamps == 6)
+			this.visionVisibility.animations.play('sixth', 5, false);
+		else if(litStreetLamps > 6)
+			this.visionVisibility.animations.play('seventh', 5, false);
+
+		// if(litStreetLamps == 1) {
+		// 	this.visionVisibility.animations.play('first');
+		// } else if (litStreetLamps == 2) {
+		// 	this.visionVisibility.animations.play('second');
+		// }
+	//	if(townLampLit == true && town2LampLit == true)
+			
+		// Firefly Respawner
+		// set up looping event (delay, callback, context, arguments)
+		timer = game.time.create();
+		timer.loop(10500, function() { 
+			console.log('loop event at: ' + timer.ms);
+						this.spawnFirefly(game.rnd.integerInRange(5,7));
+		}, this);
+		timer.start(); 
 
 		// Set up the bottom GUI 
 		var bottomGUI = game.add.sprite(0, game.world.height-64, 'bottom');
@@ -133,7 +197,7 @@ var playState = {
 		this.playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
 		this.playerLives.fixedToCamera = true;
 
-		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+' Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
 		this.firefliesCaught.fixedToCamera = true;
 
 		// Pause button
@@ -153,14 +217,14 @@ var playState = {
 	},
 	spawnEnemy: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.enemy = enemies.create(0, game.world.centerY+55, 'fAssets', 'enemySprite0001');
+			this.enemy = enemies.create(1200, game.world.centerY+55, 'fAssets', 'enemySprite0001');
 
 			//this.enemy = enemies.create(game.rnd.integerInRange(100,600), game.world.centerY+55, 'fAssets', 'enemySprite0001');
 			//this.enemy.scale.x *= -1;
 			this.enemy.animations.add('right',['enemySprite0002', 'enemySprite0003'], 5, true);
 			this.enemy.animations.add('left',['enemySprite0005', 'enemySprite0006'], 5, true);
 		//console.log(this.enemy.body.velocity.x);
-			game.add.tween(this.enemy).to( { x: 1200 }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
+			game.add.tween(this.enemy).to( { x: 350 }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
 
 			//game.add.tween(this.enemy).to( { x: game.rnd.integerInRange(0,1200) }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
 
@@ -170,7 +234,7 @@ var playState = {
 		this.streetLamp.animations.play('light');
 	},
 	spawnStreetLamp: function() {
-		this.streetLamp = streetLampGroup.create(1850, game.world.centerY-180, 'fAssets', 'streetLampDark');
+		this.streetLamp = streetLampGroup.create(1750, game.world.centerY-140, 'fAssets', 'streetLampDark');
 		//this.streetLamp.scale *= -1;
 		//this.streetLamp.contain = 0; 
 		//this.streetLamp.n? + counter
@@ -186,38 +250,11 @@ var playState = {
 
 	spawnFirefly: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'firefly');
+			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'singleFirefly');
 			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(0,game.world.centerX+400) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX+400), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
 			game.add.tween(this.firefly).to( { y: game.world.centerY+95 }, 1500, Phaser.Easing.Linear.None, true, game.world.centerY-75, 1500, Phaser.Easing.Linear.None, true);
 		}
 	},
-	// actionOnClick: function() {
-	// 	// Pause Menu
-	// 	var pauseMenu = game.add.sprite(game.world.centerX, game.world.centerY, 'menu');
-	// 	pauseMenu.anchor.set(0.5);
-
-	// 	// Resume and Title Buttons
-	// 	var resumeButton = game.add.button(game.world.centerX, game.world.centerY-10, 'resume', this.resumeOnClick, this);
-	// 	resumeButton.anchor.set(0.5);
-	// 	resumeButton.onInputOver.add(this.over, this.resumeButton);
-	// 	resumeButton.onInputOut.add(this.out, this.resumeButton);
-	// 	//	resumeButton.alpha = 0;
-
-	// 	var returntoTitle = game.add.button(game.world.centerX, game.world.centerY+80, 'title', this.titleOnClick, this);
-	// 	returntoTitle.anchor.set(0.5);
-	// 	returntoTitle.onInputOver.add(this.over, this.returntoTitle);
-	// 	returntoTitle.onInputOut.add(this.out, this.returntoTitle);
-	// },
-
-	// resumeOnClick: function(){
-	// // 	game.state.start('tutorial');
-	// 	pauseGame();
-	//  },
-
-	// titleOnClick: function(){
-	// 	game.state.start('title');
-	// },
-
 	over: function(button) {
     	button.frame = 1;
 	},
@@ -232,9 +269,11 @@ var playState = {
 		this.playerLives.text = lives;
 
 		if(this.player.x >= enemy.x)
-			game.add.tween(this.player).to( {x:this.player.x+200}, 100, Phaser.Easing.Linear.None, true);
-		else
+		//	game.add.tween(this.player).to( {x:this.player.x+200}, 100, Phaser.Easing.Linear.None, true);
+	//	else
 			game.add.tween(this.player).to( {x:this.player.x-200}, 100, Phaser.Easing.Linear.None, true);
+		//else
+		//game.add.tween(this.player).to( {x:this.player.x+200}, 100, Phaser.Easing.Linear.None, true);
 	},
 
 	killEnemy: function(player, enemy) {
@@ -258,7 +297,7 @@ var playState = {
 
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
-		this.firefliesCaught.text = fireflies+' Fireflies Caught';	// update text
+		this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
 	},
 
 	fillStreetLamp: function(player, streetLamp) {
@@ -266,7 +305,7 @@ var playState = {
 		if((fireflies > 0) && (townLampFill < 5) && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
 			depositFF.play();
 			fireflies--;	// add to lantern
-			this.firefliesCaught.text = fireflies+' Fireflies Caught';	// update text
+			this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
 			townLampFill++;
 
 			full = false;
@@ -298,7 +337,7 @@ var playState = {
 
 			if (litStreetLamps == 1)
 				this.visionVisibility.animations.play('first', 5, false);
-			else
+			else if(litStreetLamps == 2)
 				this.visionVisibility.animations.play('second', 5, false);
 
 			filledText = game.add.text(this.player.x+50, this.player.y-50, 'This street lamp is now filled!',{font: '25px Advent Pro', fill: '#E5D6CE'});
@@ -319,10 +358,19 @@ var playState = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
 			game.state.start('town'); 
 	},
-	
+	townLeft: function() {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
+			game.state.start('townLeft'); 
+	},
 	update: function() {
 	   // Read input from keyboard to move the player
 	    cursors = game.input.keyboard.createCursorKeys();
+
+		//If player runs out of lives
+		if(lives <= 0){
+			game.state.start('end');
+			music.stop();
+		}
 
 	    // Player can only hold up to 5 
 	    if(fireflies < 5 && full == false) {
@@ -337,6 +385,7 @@ var playState = {
   		// collision detection for portals
   		game.physics.arcade.overlap(this.player, this.portalToShop, this.shop);
   		game.physics.arcade.overlap(this.player, this.portalToTown2, this.town2);
+  		game.physics.arcade.overlap(this.player, this.portalToTownLeft, this.townLeft);
 
   		// collision detectopms for player 
   		game.physics.arcade.overlap(this.player, this.streetLamp, this.fillStreetLamp, null, this);
@@ -381,7 +430,7 @@ var playState = {
 
   		if( this.enemy.x ==1200)
 	    	this.enemy.animations.play('left');
-	    else if( this.enemy.x ==0)
+	    else if( this.enemy.x == 350)
 	    	this.enemy.animations.play('right');
 
 	  //  console.log(this.enemy.body.velocity.x);
@@ -393,7 +442,7 @@ var playState = {
 			playerFF = fireflies; 
 
 	    	if(right == true) {
-				this.firefly2 = attack.create(this.player.x+65, this.player.centerY, 'fAssets', 'firefly');
+				this.firefly2 = attack.create(this.player.x+65, this.player.centerY, 'fAssets', 'singleFirefly');
 				// game.add.tween(object).to( {property that you want to modify}, time (1000 = 1 sec), copy, true for repeat)
 				game.add.tween(this.firefly2).to( { x: this.player.x+450 }, 1000, Phaser.Easing.Linear.None, true);
 				game.add.tween(this.firefly2).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
@@ -405,9 +454,9 @@ var playState = {
 					playerFF--;
 				}
 
-				this.firefliesCaught.text = fireflies+' Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
 			} else {
-				this.firefly2 = attack.create(this.player.x-65, this.player.centerY, 'fAssets', 'firefly');
+				this.firefly2 = attack.create(this.player.x-65, this.player.centerY, 'fAssets', 'singleFirefly');
 				game.add.tween(this.firefly2).to( { x: this.player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
 				game.add.tween(this.firefly2).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
 				game.time.events.add(Phaser.Timer.SECOND * 1, this.fadeFF, this);
@@ -417,7 +466,7 @@ var playState = {
 					console.log('You ran out of fireflies. Try collecting more!'); 
 					playerFF--;
 				}
-				this.firefliesCaught.text = fireflies+' Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
 
 			}
 	    }
@@ -452,7 +501,7 @@ var playState = {
 	},
 	 render: function() {
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
-	 	//game.debug.body(this.spriteBounds); 
+	 	//game.debug.body(this.enemy); 
 	 	//game.debug.body(this.spriteBoundsRight); 
 	 	//game.debug.spriteInfo(this.player, 32, 32);
 	 }
