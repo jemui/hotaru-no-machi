@@ -17,10 +17,20 @@ var titleState = {
 		this.streetLamp = game.add.sprite(game.world.centerX, game.world.height-450, 'fAssets', 'streetLampDark');
 
 		//center is 600 x 350. Start next to machi and fly to bottom right corner  
-		firefly = game.add.sprite(game.world.centerX-200, game.world.centerY-200, 'fAssets', 'singleFirefly');
+		firefly = game.add.sprite(game.world.centerX-175, game.world.centerY-175, 'fAssets', 'singleFirefly');
 		firefly.scale.x *= -1;
 		game.add.tween(firefly).to( { x: game.world.centerX+50 }, 5500, Phaser.Easing.Linear.None, true);
 		game.add.tween(firefly).to( { y: game.world.centerY-100 }, 4500, Phaser.Easing.Linear.None, true);
+
+		// firefly cluster to decorate the title screen 
+		groupFirefly =  game.add.sprite(100, game.world.centerY+150, 'fAssets', 'groupFirefly');
+	    game.add.tween(groupFirefly).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, { alpha: 0.3 }, 1500, Phaser.Easing.Linear.None, true);
+		game.add.tween(groupFirefly).to( { x: 200 }, 25500, Phaser.Easing.Linear.None, true, { x: 100 }, 15500, Phaser.Easing.Linear.None, true);
+
+
+		groupFirefly =  game.add.sprite(game.world.centerX-100, game.world.centerY-300, 'fAssets', 'groupFirefly');
+		groupFirefly.alpha = 0.3;
+	    game.add.tween(groupFirefly).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, { alpha: 0.3 }, 1500, Phaser.Easing.Linear.None, true);
 
 		// setup difficulty timer
 		this.timer = game.time.create(false);	// .create(autoDestroy)
@@ -29,6 +39,8 @@ var titleState = {
 
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000014');
 		this.visionVisibility.animations.add('light', ['gradient_000015','gradient_000016'], 5, true);
+
+
 	},
 	light: function() {
 		streetLampLit = game.add.sprite(game.world.centerX, game.world.height-450, 'fAssets', 'streetLampLit');

@@ -75,18 +75,22 @@ var tutorialState = {
 	    	game.add.tween(this.dialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
 
 			// Add player 
-			this.player = game.add.sprite(game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001');
-			this.player.anchor.set(0.5);
-			this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-			this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
-			game.physics.arcade.enable(this.player); // Enable physics on the player
+			player = new Player(game, game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+			game.add.existing(player);
+			// this.player = game.add.sprite(game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001');
+			// this.player.anchor.set(0.5);
+			// this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
+			// this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+			// game.physics.arcade.enable(this.player); // Enable physics on the player
     	} else {
 			// Add player 
-			this.player = game.add.sprite(game.width-151, game.world.centerY+80, 'fAssets', 'playerSprite0001');
-			this.player.anchor.set(0.5);
-			this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-			this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
-			game.physics.arcade.enable(this.player); // Enable physics on the player
+			player = new Player(game, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+			game.add.existing(player);
+			// this.player = game.add.sprite(game.width-151, game.world.centerY+80, 'fAssets', 'playerSprite0001');
+			// this.player.anchor.set(0.5);
+			// this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
+			// this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+			// game.physics.arcade.enable(this.player); // Enable physics on the player
 
 			this.shopDialogue = game.add.text(50, game.world.height-155, "Welcome back! To buy supplies from us, hit the space bar!", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			this.shopDialogue.alpha = 1;
@@ -183,15 +187,15 @@ var tutorialState = {
   			fillLamp.play();
   			playerFF--;
   		}
-	    game.physics.arcade.collide(this.player, this.bottomGUI);
-	    game.physics.arcade.collide(this.player, objects);
-	    game.physics.arcade.overlap(this.player, this.portalToTown, this.town);
+	    game.physics.arcade.collide(player, this.bottomGUI);
+	    game.physics.arcade.collide(player, objects);
+	    game.physics.arcade.overlap(player, this.portalToTown, this.town);
 	    //game.physics.arcade.collide(this.player, this.bound);
 	    //game.physics.arcade.collide(this.player, this.boundTop);
 
 	    // Reset the players velocity (movement)
-	    this.player.body.velocity.x = 0;
-	    this.player.body.velocity.y = 0;
+	    player.body.velocity.x = 0;
+	    player.body.velocity.y = 0;
 
 	    if(timesVisited > 1 && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 	    	this.shopDialogue.text = 'Use the number keys (1-3) to buy your desired item.\nHit the space bar again to close the shop menu!'; 
@@ -220,28 +224,28 @@ var tutorialState = {
 	    }
 
 	    // Move to next state when player exits shop (move all the way to the right)
-	    if(this.player.x > game.world.width + this.player.width) {
+	    if(player.x > game.world.width + player.width) {
 	    	game.state.start('play', true, false);
 	    }
 
-	    // Arrow keys to move player
-	    if (cursors.left.isDown) {
-	    	this.player.animations.play('left', 10, false);
-	        this.player.body.velocity.x -= 500;	// Move to the left
-	        left = true;
-	    }
-	    else if (cursors.right.isDown) {
-			this.player.animations.play('right', 10, false);
-	        this.player.body.velocity.x += 500;  // Move to the right
-	        right = true;
-	    } else {
-	    	// stand still 
-	    	this.player.animations.stop();
-	    	if(left == true)
-	    		this.player.frame = 'playerSprite0004';
-	    	else 
-	    		this.player.frame = 'playerSprite0001';
-	    }
+	  //   // Arrow keys to move player
+	  //   if (cursors.left.isDown) {
+	  //   	this.player.animations.play('left', 10, false);
+	  //       this.player.body.velocity.x -= 500;	// Move to the left
+	  //       left = true;
+	  //   }
+	  //   else if (cursors.right.isDown) {
+			// this.player.animations.play('right', 10, false);
+	  //       this.player.body.velocity.x += 500;  // Move to the right
+	  //       right = true;
+	  //   } else {
+	  //   	// stand still 
+	  //   	this.player.animations.stop();
+	  //   	if(left == true)
+	  //   		this.player.frame = 'playerSprite0004';
+	  //   	else 
+	  //   		this.player.frame = 'playerSprite0001';
+	  //   }
 
 	    if(current == 9 && tutSpawned == false) {
 	    	tutSpawned = true; 
@@ -268,10 +272,10 @@ var tutorialState = {
 	    }
 
 	    // Arrow keys to move player
-	    if (cursors.up.isDown)
-	    	this.player.body.velocity.y -= 500;	// Move up
-	    if (cursors.down.isDown) 
-	    	this.player.body.velocity.y += 500; // Move down
+	    // if (cursors.up.isDown)
+	    // 	this.player.body.velocity.y -= 500;	// Move up
+	    // if (cursors.down.isDown) 
+	    // 	this.player.body.velocity.y += 500; // Move down
 	},
 	// render: function() {
 	// 	game.debug.spriteInfo(this.player, 32, 32);
