@@ -19,7 +19,7 @@ var lives = 5;
 var loadState = {
 	preload: function () {
 		game.scale.pageAlignHorizontally = true;
-		//game.scale.pageAlignVertically = true;
+
 		game.scale.refresh();
 
 		var loadingText = game.add.text(game.world.centerX, game.world.centerY, 'Loading...', {font: '40px Cambria', fill: '#033E54', align: 'center'});
@@ -31,10 +31,8 @@ var loadState = {
 		// title screen buttons
 		game.load.image('start', 'assets/img/startButton.png');
 		game.load.image('credits', 'assets/img/creditsButton.png');
-	
-		//game.load.spritesheet('credits', 'assets/img/credits.png', 317, 72);
 
-		//  pause menu buttons
+		// pause menu buttons
 		game.load.spritesheet('pause', 'assets/img/pause.png', 71, 71);
 		game.load.spritesheet('resume', 'assets/img/resume.png', 270, 57);
 		game.load.spritesheet('title', 'assets/img/title.png', 270, 57);
@@ -45,6 +43,8 @@ var loadState = {
 		game.load.image('shopMenu', 'assets/img/shopMenu.png');
 		game.load.image('light', 'assets/img/light.png');
 		game.load.image('bound', 'assets/img/bound.png');
+		game.load.image('speech', 'assets/img/speechBubble.png');
+		game.load.image('speechArrow', 'assets/img/speechBubbleArrow.png');
 		game.load.image('spriteBounds', 'assets/img/spriteBounds.png');
 		game.load.image('splashScreen', 'assets/img/splashScreen.png');
 
@@ -60,7 +60,7 @@ var loadState = {
 		game.load.audio('fillLamp', ['assets/audio/filledLamp.ogg']);
 		game.load.audio('hitFF', ['assets/audio/hitFF.ogg']);
 		game.load.audio('fillStreet', ['assets/audio/hitFF.ogg']);	
-
+		game.load.audio('playerDies', ['assets/audio/playerDies.ogg']);	
 		game.load.audio('enemyDies', ['assets/audio/enemyDies.ogg']);
 		game.load.audio('hitEnemy', ['assets/audio/hitEnemy.ogg']);
 		game.load.audio('shootFF', ['assets/audio/shootFF.ogg']);	
