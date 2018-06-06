@@ -67,6 +67,10 @@ var endState = {
 		tutSpawned = false;
 		current = 0;
 		full = false; 
+		lanternSize = 5;
+	 	purificationMilk = 0;
+		healthJuice = 0;
+		proteinShake = 0;
 		
 		//go back to the title screen
 		game.state.start('title'); 

@@ -15,7 +15,13 @@ WebFontConfig = {
 function createText() {
 }
 
+//GUI + Player Inventory
 var lives = 5; 
+var lanternSize = 5;
+var purificationMilk = 0;
+var healthJuice = 0;
+var proteinShake = 0;
+
 var loadState = {
 	preload: function () {
 		game.scale.pageAlignHorizontally = true;
@@ -52,6 +58,7 @@ var loadState = {
 		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
 		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
 		game.load.atlas('fAssets', 'assets/img/FinalArtAssets.png', 'assets/img/FinalArtAssets.json');
+		game.load.atlas('endGame', 'assets/img/endGame.png', 'assets/img/endGame.json');
 	//	game.load.atlas('splashScreen', 'assets/img/titleScreen.png', 'assets/img/titleScreen.json');
 
 		// Load audio

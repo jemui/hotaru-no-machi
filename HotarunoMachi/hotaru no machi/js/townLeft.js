@@ -86,7 +86,7 @@ var townLeftState = {
 		civ = game.add.group();
 		civ.enableBody = true;
 
-		this.spawnCivilian(1);
+		this.spawnCivilian(1000, game.world.centerY+50, 1);
 
 		portal = game.add.group();
 		portal.enableBody = true;
@@ -94,14 +94,20 @@ var townLeftState = {
 
 //		this.portalTotownLeft = portal.create(game.world.centerX+1000, game.world.centerY, 'light');
 
+		//Player
 		//PlayerSprite
-		this.player = game.add.sprite(2200, game.world.height-175, 'fAssets', 'playerSprite0001');
-		this.player.enableBody = true;
-		this.player.anchor.set(0.5);
-		this.player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-		this.player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+		player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 
-		game.physics.arcade.enable(this.player); // Enable physics on the player
+
+
+		game.add.existing(player);
+		// player = game.add.sprite(2200, game.world.height-175, 'fAssets', 'playerSprite0001');
+		// player.enableBody = true;
+		// player.anchor.set(0.5);
+		// player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
+		// player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+
+		// game.physics.arcade.enable(player); // Enable physics on the player
 
 		// visibility. Only GUI related elements should go after this
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
@@ -138,8 +144,8 @@ var townLeftState = {
 
 		var heart = game.add.sprite(200, game.world.height-55, 'assets', 'heartIcon');
 		heart.fixedToCamera = true;
-		this.playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		this.playerLives.fixedToCamera = true;
+		playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		playerLives.fixedToCamera = true;
 
 		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
 		this.firefliesCaught.fixedToCamera = true;
@@ -153,29 +159,28 @@ var townLeftState = {
 		pauseButton.onInputOut.add(this.out, this.pauseButton);
 
 		//console.log(game.width);
-		game.camera.follow(this.player);	// Game camera follows player.
+		game.camera.follow(player);	// Game camera follows player.
 	},
 	shop: function() {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
 			game.state.start('tutorial', true, false);
 	},
-	spawnCivilian: function(n) {
+	spawnCivilian: function(x, y, n) {
 		for(var i = 0; i < n; i++ ){
-			this.civilian = civ.create(1000, game.world.centerY, 'fAssets', 'civilianSprite0001');
-
+			this.civilian = civ.create(x, y, 'fAssets', 'civilianSprite0001');
+			//this.civilian.anchor.set(0.5);
+			this.civilian.body.setSize(333, 192, -100, 0); //(width, height, offsetX, offsetY)
 
 			this.civilian.animations.add('right',['civilianSprite0002', 'civilianSprite0003'], 5, true);
 			this.civilian.animations.add('left',['civilianSprite0005', 'civilianSprite0006'], 5, true);
 		//console.log(this.enemy.body.velocity.x);
-			game.add.tween(this.civilian).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+			//game.add.tween(this.civilian).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
 
-			this.civText = game.add.text(700, game.world.centerY-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
-			//game.add.tween(civText).to( { alpha: 0 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
-
-			//game.add.tween(this.enemy).to( { x: game.rnd.integerInRange(0,1200) }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
-
+			this.civilian.scale.x *= -1;
+			civText = game.add.text(x-250, y-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
+		//	game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+			game.add.tween(civText).to( { alpha: 0.5 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 		}
 	},
 	civDialogue: function() {
@@ -235,12 +240,12 @@ var townLeftState = {
 	health: function(enemy) {
 		hitEnemy.play(); 
 		lives-=0.5;	// sometimes subtracts 0.5, sometimes 1 
-		this.playerLives.text = lives;
+		playerLives.text = lives;
 
-		if(this.player.x >= enemy.x)
-			game.add.tween(this.player).to( {x:this.player.x+200}, 100, Phaser.Easing.Linear.None, true);
+		if(player.x >= enemy.x)
+			game.add.tween(player).to( {x:player.x+200}, 100, Phaser.Easing.Linear.None, true);
 		else
-			game.add.tween(this.player).to( {x:this.player.x-200}, 100, Phaser.Easing.Linear.None, true);
+			game.add.tween(player).to( {x:player.x-200}, 100, Phaser.Easing.Linear.None, true);
 	},
 
 	killEnemy: function(player, enemy) {
@@ -257,8 +262,8 @@ var townLeftState = {
 		if(fireflies == 5) {
 			full = true;
 
-			fillText = game.add.text(this.player.x-150, this.player.y-150, 'Your lantern is now full. Try storing fireflies in street lamps!',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(fillText).to( { y: this.player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
+			fillText = game.add.text(player.x-150, player.y-150, 'Your lantern is now full. Try storing fireflies in street lamps!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(fillText).to( { y: player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 3500, Phaser.Easing.Linear.None, true);
 
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
@@ -276,16 +281,16 @@ var townLeftState = {
 
 			full = false;
 
-			fillText = game.add.text(this.player.x+50, this.player.y-100, 'StreetLamp contains ' + townLeftLampFill + '/5 fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(fillText).to( { y: this.player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
+			fillText = game.add.text(player.x+50, player.y-100, 'StreetLamp contains ' + townLeftLampFill + '/5 fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(fillText).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
 			console.log('StreetLamp contains ' + townLeftLampFill + ' fireflies.');
 			var temp = true;
 		} 
 		else if(fireflies == 0 && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
-			noFirefliesLeft = game.add.text(this.player.x+50, this.player.y-100, 'You do not have any more fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(noFirefliesLeft).to( { y: this.player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
+			noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(noFirefliesLeft).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(noFirefliesLeft).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
 			console.log('You do not have any more fireflies.'); 
@@ -306,8 +311,8 @@ var townLeftState = {
 			else
 				this.visionVisibility.animations.play('second', 5, false);
 
-			filledText = game.add.text(this.player.x+50, this.player.y-50, 'This street lamp is now filled!',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(filledText).to( { y: this.player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
+			filledText = game.add.text(player.x+50, player.y-50, 'This street lamp is now filled!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(filledText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
 			townLeftLampLit = true;
@@ -337,7 +342,7 @@ var townLeftState = {
 
 	    // Player can only hold up to 5 
 	    if(fireflies < 5 && full == false) {
-  			game.physics.arcade.overlap(this.player, object, this.collectFirefly, null, this);  // Check player collision with fireflies
+  			game.physics.arcade.overlap(player, object, this.collectFirefly, null, this);  // Check player collision with fireflies
   		} 
   		// play sound when player lamp is full
   		if(playerFF == 5) {
@@ -346,36 +351,36 @@ var townLeftState = {
   		}
 
   		// collision detection for portals
-  		game.physics.arcade.overlap(this.player, this.portalToTown, this.town);
+  		game.physics.arcade.overlap(player, this.portalToTown, this.town);
 
   		// collision detection for player 
-  		game.physics.arcade.overlap(this.player, this.streetLamp, this.fillStreetLamp, null, this);
-	    game.physics.arcade.collide(this.player, this.bottomGUI);
+  		game.physics.arcade.overlap(player, this.streetLamp, this.fillStreetLamp, null, this);
+	    game.physics.arcade.collide(player, this.bottomGUI);
 	    
-	    game.physics.arcade.collide(this.player, bounds);
+	    game.physics.arcade.collide(player, bounds);
 
-	    game.physics.arcade.overlap(this.player, enemies, this.health, null, this);
+	    game.physics.arcade.overlap(player, enemies, this.health, null, this);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
-  		game.physics.arcade.overlap(this.player, civ, this.civDialogue);
+  		game.physics.arcade.overlap(player, civ, this.civDialogue);
 
 		// ----------------------------------------------------------------------
 
 		// dat.gui stuff 
-	    this.game.physics.arcade.collide(this.player, this.collisionLayer);
+	    this.game.physics.arcade.collide(player, this.collisionLayer);
 
 	    //Here we update the player variables with the adjusted settings in dat.gui
-	    this.player.xSpeed = settings.moveSpeed;
-	    this.player.ySpeed = settings.jumpSpeed;
-	    //this.player.body.gravity.y = settings.gravity;
+	    player.xSpeed = settings.moveSpeed;
+	    player.ySpeed = settings.jumpSpeed;
+	    //player.body.gravity.y = settings.gravity;
 
 		// ----------------------------------------------------------------------
 
 	    // Reset the players velocity (movement)
-	    this.player.body.velocity.x = 0;
-	    this.player.body.velocity.y = 0;
+	    player.body.velocity.x = 0;
+	    player.body.velocity.y = 0;
 
 	    // Move back to tut by going left 
-	    if(this.player.x < -this.player.width) {
+	    if(player.x < -player.width) {
 	    	game.state.start('tutorial', true, false);
 	    	faceRight = true;
 	    	//music.stop();
@@ -399,9 +404,9 @@ var townLeftState = {
 			playerFF = fireflies; 
 
 	    	if(right == true) {
-				this.firefly2 = attack.create(this.player.x+65, this.player.centerY, 'fAssets', 'singleFirefly');
+				this.firefly2 = attack.create(player.x+65, player.centerY, 'fAssets', 'singleFirefly');
 				// game.add.tween(object).to( {property that you want to modify}, time (1000 = 1 sec), copy, true for repeat)
-				game.add.tween(this.firefly2).to( { x: this.player.x+450 }, 1000, Phaser.Easing.Linear.None, true);
+				game.add.tween(this.firefly2).to( { x: player.x+450 }, 1000, Phaser.Easing.Linear.None, true);
 				game.add.tween(this.firefly2).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
 				game.time.events.add(Phaser.Timer.SECOND * 1, this.fadeFF, this);
 
@@ -413,8 +418,8 @@ var townLeftState = {
 
 				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
 			} else {
-				this.firefly2 = attack.create(this.player.x-65, this.player.centerY, 'fAssets', 'singleFirefly');
-				game.add.tween(this.firefly2).to( { x: this.player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
+				this.firefly2 = attack.create(player.x-65, player.centerY, 'fAssets', 'singleFirefly');
+				game.add.tween(this.firefly2).to( { x: player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
 				game.add.tween(this.firefly2).to( { alpha: 0 }, 1000, Phaser.Easing.Linear.None, true);
 				game.time.events.add(Phaser.Timer.SECOND * 1, this.fadeFF, this);
 				// update fireflies
@@ -430,29 +435,29 @@ var townLeftState = {
 
 	    // Arrow keys to move player
 	    if (cursors.left.isDown) {
-	    	this.player.animations.play('left', 10, false);
-	        this.player.body.velocity.x -= 500;	// Move to the left
+	    	player.animations.play('left', 10, false);
+	        player.body.velocity.x -= 500;	// Move to the left
 	        left = true;
 	        right = false;
 	    }
 	    else if (cursors.right.isDown) {
-			this.player.animations.play('right', 10, false);
-	        this.player.body.velocity.x += 500;  // Move to the right
+			player.animations.play('right', 10, false);
+	        player.body.velocity.x += 500;  // Move to the right
 	        right = true;
 	        left = false;
 	    } else {
 	    	// stand still 
-	    	this.player.animations.stop();
+	    	player.animations.stop();
 	    	if(left == true)
-	    		this.player.frame = 'playerSprite0004';
+	    		player.frame = 'playerSprite0004';
 	    	else 
-	    		this.player.frame = 'playerSprite0001';
+	    		player.frame = 'playerSprite0001';
 	    }
 	    if (cursors.up.isDown) {
-	    	this.player.body.velocity.y -= 500;	// Move up
+	    	player.body.velocity.y -= 500;	// Move up
 	    }
 	    if (cursors.down.isDown) {
-	    	this.player.body.velocity.y += 500; // Move down
+	    	player.body.velocity.y += 500; // Move down
 	    }
 
 	},
@@ -460,6 +465,6 @@ var townLeftState = {
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
 	 	//game.debug.body(this.spriteBounds); 
 	 	//game.debug.body(this.spriteBoundsRight); 
-	 	//game.debug.spriteInfo(this.player, 32, 32);
+	 	game.debug.spriteInfo(player, 32, 32);
 	 }
 }

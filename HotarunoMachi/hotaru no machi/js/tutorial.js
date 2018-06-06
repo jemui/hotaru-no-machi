@@ -45,11 +45,21 @@ var tutorialState = {
 
 		// Bottom GUI
 		this.bottomGUI.scale.setTo(2,1);
-		var heart = game.add.sprite(200, game.world.height-55, 'assets', 'heartIcon');
-		var firefly = object.create(100, game.world.height-55, 'fAssets', 'singleFirefly');
+		var playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var heart = game.add.sprite(playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
 
-		var playerLives = game.add.text(218, game.world.height-45, (lives),{font: '25px Advent Pro', fill: '#E5D6CE'});
-		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
+
+		this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
+
+		this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
+
+		this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
+
 
 		// Pause Button
 		var pauseButton =  game.add.button(game.world.width-32, game.world.height-32, 'pause', pauseGame, this);
@@ -77,9 +87,12 @@ var tutorialState = {
 			// Add player 
 			player = new Player(game, game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 			game.add.existing(player);
+
+		//	bot = new Status(game, game.world.centerX-200, game.world.centerY+80, 'bottom', 150, game.world.height-175);
+			game.add.existing(player);
     	} else {
 			// Add player 
-			player = new Player(game, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+			player = new Player(game, game.world.width-100, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175); //bugged 
 			game.add.existing(player);
 
 			this.shopDialogue = game.add.text(50, game.world.height-155, "Welcome back! To buy supplies from us, hit the space bar!", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
@@ -162,7 +175,7 @@ var tutorialState = {
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
 		//console.log(playerFF);
-		this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+		this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 	},
 	update: function() {
 	   // Read input from keyboard to move the player
@@ -192,25 +205,67 @@ var tutorialState = {
 	    	this.shopMenu = game.add.sprite(game.world.centerX, game.world.centerY-75, 'shopMenu');
 	    	this.shopMenu.anchor.set(0.5);
 	    	showMenu = true; 
-	    	this.shopMenu.alpha = 1;
+	    	this.shopMenu.visible = true;
 	    }
 
 	    // Buying items
-	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE)) {
-	    	console.log('You bought purification milk.');
+	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies >= 2) {
+	    	purificationMilk++;
+	    	//update text & subtract fireflies
+			if(fireflies == lanternSize) {
+				full = false; 
+			}
+	    	//shootFF.play(); 
+	    	fireflies=fireflies-2; 
+			this.firefliesCaught.text = fireflies+'/'+lanternSize;
+			this.pureMilk.text = purificationMilk;
+
+	    	console.log('You bought purification milk. Close the menu and press 1 to use it.');
+	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies < 2) {
+	    	console.log('You do not have enough fireflies.');
 	    }
-	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO)) {
+
+	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && fireflies >=3) {
+	    	healthJuice++;
+	    	//update text & subtract fireflies
+			if(fireflies == lanternSize) {
+				full = false; 
+			}
+	    	//shootFF.play(); 
+	    	fireflies=fireflies-3; 
+			this.firefliesCaught.text = fireflies+'/'+lanternSize;
+			this.juice.text = healthJuice;
+
 	    	console.log('You bought health juice.');
+	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && fireflies < 3) {
+	    	console.log('You do not have enough fireflies.');
 	    }
-	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.THREE)) {
+
+
+	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && fireflies >= 5) {
+	    	proteinShake++;
+	    	//update text & subtract fireflies
+			if(fireflies == lanternSize) {
+				full = false; 
+			}
+	    	//shootFF.play(); 
+	    	fireflies=fireflies-5; 
+			this.firefliesCaught.text = fireflies+'/'+lanternSize;
+			this.shake.text = proteinShake;
+
+
 	    	console.log('You bought a storage upgrade');
+	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && fireflies < 5) {
+	    	console.log('You do not have enough fireflies.');
 	    }
+
+
 	    // close the shop menu
-	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.X)) {
 	    	showMenu = false; 
-	    	this.shopMenu = game.add.sprite(game.world.centerX, game.world.centerY-75, 'shopMenu');
-	    	this.shopMenu.anchor.set(0.5);
-	    	this.shopMenu.alpha = 0;
+	    	//this.shopMenu = game.add.sprite(game.world.centerX, game.world.centerY-75, 'shopMenu');
+	    	//this.shopMenu.anchor.set(0.5);
+	    	this.shopMenu.visible = false;
 	    }
 
 	    // Move to next state when player exits shop (move all the way to the right)

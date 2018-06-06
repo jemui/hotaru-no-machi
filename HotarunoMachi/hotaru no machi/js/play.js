@@ -114,10 +114,19 @@ var playState = {
 
 		// spawn a civilian (x, y, n)
 		this.spawnCivilian(750, game.world.centerY, 1); 
+
+		this.civDialogue = ['Hey you! Are you a bit lost?', 'Hey you! Are you a bit lost? I see a dark street lamp down this path that might help you see better if you can figure out how to get it working again.',
+							'Oh! And a few more important things. If you see some strange looking..apples.. do not hestiate to attack them with the "A" key.',
+							'There are some strange puddles around the town, which might be linked to their hositility, so try not to get killed out there!' ];
+
+
 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
+		this.speechBubble.tint = 0xD0D0D0;
 		this.speechBubble.visible = false; 
 		this.speechArrow = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speechArrow');
+		this.speechArrow.tint = 0xD0D0D0;
 		this.speechArrow.visible = false; 
+		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
 
 		//PlayerSprite
 		if (last == 'townLeft') {
@@ -207,13 +216,37 @@ var playState = {
 		bottomGUI.scale.setTo(2,2);
 		bottomGUI.fixedToCamera = true;
 
-		var heart = game.add.sprite(200, game.world.height-55, 'assets', 'heartIcon');
-		heart.fixedToCamera = true;
-		playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var heart = game.add.sprite(playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
 		playerLives.fixedToCamera = true;
+		heart.fixedToCamera = true;
 
-		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
 		this.firefliesCaught.fixedToCamera = true;
+		fireflyIcon.fixedToCamera = true;
+
+		this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
+		this.pureMilk.fixedToCamera = true;
+		milkInventoryIcon.fixedToCamera = true;
+
+		this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
+		this.juice.fixedToCamera = true;
+		juiceInventoryIcon.fixedToCamera = true;
+
+		this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
+		this.shake.fixedToCamera = true;
+		proteinShakeInventoryIcon.fixedToCamera = true;
+
+
+	//	playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
+	//	playerLives.fixedToCamera = true;
+
+	//	this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
+
 
 		// Pause button
 		var pauseButton =  game.add.button(1168, game.world.height-32, 'pause', pauseGame, this);
@@ -330,7 +363,7 @@ var playState = {
 
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
-		this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+		this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 	},
 
 	fillStreetLamp: function(player, streetLamp) {
@@ -338,7 +371,7 @@ var playState = {
 		if((fireflies > 0) && (townLampFill < 5) && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
 			depositFF.play();
 			fireflies--;	// add to lantern
-			this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+			this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			townLampFill++;
 
 			full = false;
@@ -418,15 +451,19 @@ var playState = {
   		// Check if player is interacting with a citizen 
   		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.overlap(player, this.civilian)) {
 			// civilian dialogue
-			var civDialogue = ['Hey you! Are you a bit lost? '];
-			
+
+
 			this.speechBubble.visible = true;
 			this.speechArrow.visible = true;
-			var dialogue = game.add.text(game.world.width-50, game.world.height-100, '▼', {font: '30px Advent Pro', fill: '#FFEDE5'});
-
+			if(civDialogueCounter < this.civDialogue.length)
+				this.dialogue.text = this.civDialogue[civDialogueCounter];
+		//	else
+			//	dialogue.text = this.civDialogue[civDialogueCounter];
 
 			civDialogueCounter++;
   		} else if (game.physics.arcade.overlap(player, this.civilian)==false){
+  			civDialogueCounter = 0;
+  			this.dialogue.text = '';
   			this.speechBubble.visible = false;
   			this.speechArrow.visible = false;
   		}
@@ -494,7 +531,7 @@ var playState = {
 					playerFF--;
 				}
 
-				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			} else {
 				this.firefly2 = attack.create(player.x-65, player.centerY, 'fAssets', 'singleFirefly');
 				game.add.tween(this.firefly2).to( { x: player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
@@ -506,7 +543,7 @@ var playState = {
 					console.log('You ran out of fireflies. Try collecting more!'); 
 					playerFF--;
 				}
-				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 
 			}
 	    }
