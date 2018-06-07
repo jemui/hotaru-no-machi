@@ -17,6 +17,16 @@ var playState = {
 		this.background = game.add.sprite(2400, -25, 'fAssets', 'townBackground');
 		this.background.scale.x *= -1;
 
+		if(litStreetLamps == totalLamps) {
+			this.background = game.add.sprite(0, -64, 'endGame', 'shopExteriorEnd');
+			this.background = game.add.sprite(2400, -25, 'endGame', 'townBackgroundEnd');
+			this.background.scale.x *= -1;
+
+			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(bright).to( { y: player.y-150 }, 5500, Phaser.Easing.Linear.None, true);
+			game.add.tween(bright).to( { alpha: 0 }, 5500, Phaser.Easing.Linear.None, true);
+		}
+
 		// sound effects
 		collectFF = game.add.audio('hitFF');
 		fillLamp = game.add.audio('fillLamp');
@@ -64,11 +74,11 @@ var playState = {
 			this.spawnStreetLamp();
 			this.spawnFirefly(game.rnd.integerInRange(5,7));
 
-			shopEntranceSignal = game.add.text(1440, game.world.centerY-210, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			shopEntranceSignal = game.add.text(300, game.world.centerY, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			shopEntranceSignal.alpha = 0;
 	    	game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 		
-			fillInstruct = game.add.text(1850, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			fillInstruct = game.add.text(1650, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			fillInstruct.alpha = 0;
 	    	game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 		
@@ -121,7 +131,7 @@ var playState = {
 							'Oh! And a few more important things. If you see some strange looking..apples.. do not hestiate to attack them with the "A" key with your fireflies.',
 							'There are some strange puddles around the town, which might be linked to their hositility, so try not to get killed out there!' ];
 
-
+		// speech bubble
 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
 		this.speechBubble.tint = 0xD0D0D0;
 		this.speechBubble.visible = false; 
@@ -133,46 +143,44 @@ var playState = {
 		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '25px Advent Pro', fill: '#000000'});
 		game.add.tween(this.next).to( { alpha: 0.5 }, 500, Phaser.Easing.Linear.None, true, {alpha: 1}, 500, Phaser.Easing.Linear.None, true);
 		this.next.visible = false;
+
 		//PlayerSprite
 		if (last == 'townLeft') {
 			player = new Player(game, 150, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-
-		//	player = game.add.sprite(150, game.world.height-175, 'fAssets', 'playerSprite0001');
-		} else if( last == 'Shop') 
+		} else if( last == 'Shop') {
 			player = new Player(game, 290, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-
-			//player = game.add.sprite(150, game.world.height-175, 'fAssets', 'playerSprite0001');
-		else if(last != 'town2') {
-			player = new Player(game, 1530, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-
-			//player = game.add.sprite(1530, game.world.height-175, 'fAssets', 'playerSprite0001');
-		} else {
-			player = new Player(game, 2160, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-
-			//player = game.add.sprite(2160, game.world.height-175, 'fAssets', 'playerSprite0001');   
-
-	    	left == true
-	    	player.frame = 'playerSprite0004'; //not working
-
 		}
+		else {
+			player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		}
+		// } else {
+		// 	player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+
+	 //    	left == true
+	 //    	player.frame = 'playerSprite0004'; //not working
+
+		// }
 
 		game.add.existing(player);
-
 
 		townVisited++;
 		last = 'Town'; 
 
-		// player.enableBody = true;
-		// player.anchor.set(0.5);
-		// player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-		// player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+		// Firefly Respawner
+		// set up looping event (delay, callback, context, arguments)
+		timer = game.time.create();
+		timer.loop(10500, function() { 
+			//console.log('loop event at: ' + timer.ms);
+			console.log(game.rnd.integerInRange(1, 10));
+			if(game.rnd.integerInRange(1, 10)%3==0) 
 
-	//	game.physics.arcade.enable(player); // Enable physics on the player
+				this.spawnFirefly(game.rnd.integerInRange(0,2));
+		}, this);
+		timer.start(); 
 
 		// visibility. Only GUI related elements should go after this
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
 		this.visionVisibility.fixedToCamera = true;
-
 
 		this.visionVisibility.animations.add('first', ['gradient_000001', 'gradient_000002', 'gradient_000003', 'gradient_000004'], 30, true);
 		this.visionVisibility.animations.add('second', ['gradient_000005', 'gradient_000006', 'gradient_000007', 'gradient_000008'], 30, true);
@@ -197,41 +205,9 @@ var playState = {
 		else if(litStreetLamps > 6)
 			this.visionVisibility.animations.play('seventh', 5, false);
 
-		// if(litStreetLamps == 1) {
-		// 	this.visionVisibility.animations.play('first');
-		// } else if (litStreetLamps == 2) {
-		// 	this.visionVisibility.animations.play('second');
-		// }
-	//	if(townLampLit == true && town2LampLit == true)
-			
-		// Firefly Respawner
-		// set up looping event (delay, callback, context, arguments)
-		timer = game.time.create();
-		timer.loop(10500, function() { 
-			//console.log('loop event at: ' + timer.ms);
-			console.log(game.rnd.integerInRange(1, 10));
-			if(game.rnd.integerInRange(1, 10)%3==0) 
 
-				this.spawnFirefly(game.rnd.integerInRange(0,2));
-		}, this);
-		timer.start(); 
-
+		// Add the status bar to the bottom
 		statusBar();
-
-
-	//	playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
-	//	playerLives.fixedToCamera = true;
-
-	//	this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
-
-
-		// Pause button
-		var pauseButton =  game.add.button(1168, game.world.height-32, 'pause', pauseGame, this);
-		pauseButton.fixedToCamera = true;
-		pauseButton.anchor.set(0.5);
-		pauseButton.scale.setTo(0.5);
-		pauseButton.onInputOver.add(this.over, this.pauseButton);
-		pauseButton.onInputOut.add(this.out, this.pauseButton);
 
 		//console.log(game.width);
 		game.camera.follow(player);	// Game camera follows player.
@@ -337,7 +313,7 @@ var playState = {
 			depositFF.play();
 			fireflies--;	// add to lantern
 			statusBar();
-			//this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
+			//statusBar();	// update inventory
 			townLampFill++;
 
 			full = false;
@@ -346,15 +322,12 @@ var playState = {
 			game.add.tween(fillText).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
-			console.log('StreetLamp contains ' + townLampFill + ' fireflies.');
 			var temp = true;
 		} 
 		else if(fireflies == 0 && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
 			noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(noFirefliesLeft).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(noFirefliesLeft).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
-
-			console.log('You do not have any more fireflies.'); 
 		}
 
 		if(townLampFill == 5 && temp == true) { //temp
@@ -367,17 +340,28 @@ var playState = {
 
 			litStreetLamps++;
 
+
 			if (litStreetLamps == 1)
 				this.visionVisibility.animations.play('first', 5, false);
 			else if(litStreetLamps == 2)
 				this.visionVisibility.animations.play('second', 5, false);
+			else if(litStreetLamps == 3)
+				this.visionVisibility.animations.play('third', 5, false);
+			else if(litStreetLamps == 4)
+				this.visionVisibility.animations.play('fourth', 5, false);
+			else if(litStreetLamps == 5)
+				this.visionVisibility.animations.play('fifth', 5, false);
+			else if(litStreetLamps == 6)
+				this.visionVisibility.animations.play('sixth', 5, false);
+			else if(litStreetLamps > 6)
+				this.visionVisibility.animations.play('seventh', 5, false);
+
 
 			filledText = game.add.text(player.x+50, player.y-50, 'This street lamp is now filled!',{font: '25px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(filledText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
 			townLampLit = true;
-			console.log('This street lamp is now filled!\nGood job!'); 
 		}
 	},
 
@@ -395,6 +379,11 @@ var playState = {
 			game.state.start('townLeft'); 
 	},
 	update: function() {
+		// Win Condition
+		 if(litStreetLamps == totalLamps && win == false) {
+		 	win = true;
+		 	game.state.start('play'); 
+		 }
 	   // Read input from keyboard to move the player
 	    cursors = game.input.keyboard.createCursorKeys();
 
@@ -508,7 +497,7 @@ var playState = {
 					playerFF--;
 				}
 
-				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
+				statusBar();	// update inventory
 			} else {
 				this.firefly2 = attack.create(player.x-65, player.centerY, 'fAssets', 'singleFirefly');
 				game.add.tween(this.firefly2).to( { x: player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
@@ -520,7 +509,7 @@ var playState = {
 					console.log('You ran out of fireflies. Try collecting more!'); 
 					playerFF--;
 				}
-				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
+				statusBar();	// update inventory
 
 			}
 	    }

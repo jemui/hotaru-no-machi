@@ -83,6 +83,7 @@ var bootState = {
 	},
 
 }
+
 // bind pause key to browser window event
 window.onkeydown = function(event) {
 	// capture keycode (event.which for Firefox compatibility)
@@ -98,22 +99,24 @@ function pauseGame() {
 	console.log(game.paused);
 
 	// Pause Menu
-	this.pauseMenu = game.add.sprite(game.world.centerX, game.world.centerY, 'menu');
+	this.pauseMenu = game.add.sprite(game.camera.x+650, game.camera.y+330, 'menu');
 	this.pauseMenu.anchor.set(0.5);
 	this.pauseMenu.alpha = 0; 
 
 	// Resume and Title Buttons
-	this.resumeButton = game.add.button(game.world.centerX, game.world.centerY-10, 'resume', resumeOnClick, this);
+	this.resumeButton = game.add.button(game.camera.x+650, game.camera.y+320, 'resume', resumeOnClick, this);
 	this.resumeButton.anchor.set(0.5);
 	this.resumeButton.onInputOver.add(this.over, this.resumeButton);
 	this.resumeButton.onInputOut.add(this.out, this.resumeButton);
 	this.resumeButton.alpha = 0; 
 
-	this.returntoTitle = game.add.button(game.world.centerX, game.world.centerY+80, 'title', titleOnClick, this);
+	this.returntoTitle = game.add.button(game.camera.x+650, game.camera.y+420, 'title', titleOnClick, this);
 	this.returntoTitle.anchor.set(0.5);
 	this.returntoTitle.onInputOver.add(this.over, this.returntoTitle);
 	this.returntoTitle.onInputOut.add(this.out, this.returntoTitle);
 	this.returntoTitle.alpha = 0; 
+
+	//var pauseButton =  game.add.button(1168, game.world.height-32, 'pause', resumeOnClick, this);
 
 	if(game.paused == true) {
 		this.pauseMenu.alpha = 1;
@@ -157,25 +160,34 @@ function out(button) {
 }
 
 // Game functions shared by all states 
-// function speechBubble(show) {
-// 	if(show == 0) {
-// 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
-// 		this.speechBubble.tint = 0xD0D0D0;
-// 		this.speechBubble.visible = false; 
-// 		this.speechArrow = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speechArrow');
-// 		this.speechArrow.tint = 0xD0D0D0;
-// 		this.speechArrow.visible = false; 
-// 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
+function lighting() {
+	this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
+	this.visionVisibility.fixedToCamera = true;
 
-// 		this.next = game.add.text(this.speechBubble.x + 460, this.speechBubble.y + 160, '▼', {font: '30px Advent Pro', fill: '#000000'});
-// 		this.next.alpha = 1;
-// 		game.add.tween(this.next).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
-// 		this.next.visible = false;
-// 	} else {
-// 		this.speechBubble.visible = true;
-// 		this.speechArrow.visible = true;
-// 	}
-// }
+	this.visionVisibility.animations.add('first', ['gradient_000001', 'gradient_000002', 'gradient_000003', 'gradient_000004'], 30, true);
+	this.visionVisibility.animations.add('second', ['gradient_000005', 'gradient_000006', 'gradient_000007', 'gradient_000008'], 30, true);
+	this.visionVisibility.animations.add('third', ['gradient_000009', 'gradient_000010', 'gradient_000011', 'gradient_000012'], 30, true);
+	this.visionVisibility.animations.add('fourth', ['gradient_000013', 'gradient_000014', 'gradient_000015', 'gradient_000016'], 30, true);
+	this.visionVisibility.animations.add('fifth', ['gradient_000017', 'gradient_000018', 'gradient_000019', 'gradient_000020'], 30, true);
+	this.visionVisibility.animations.add('sixth', ['gradient_000021', 'gradient_000022', 'gradient_000023', 'gradient_000024'], 30, true);
+	this.visionVisibility.animations.add('seventh', ['gradient_000025', 'gradient_000026', 'gradient_000027', 'gradient_000028'], 30, true);
+
+	if (litStreetLamps == 1)
+		this.visionVisibility.animations.play('first', 5, false);
+	else if(litStreetLamps == 2)
+		this.visionVisibility.animations.play('second', 5, false);
+	else if(litStreetLamps == 3)
+		this.visionVisibility.animations.play('third', 5, false);
+	else if(litStreetLamps == 4)
+		this.visionVisibility.animations.play('fourth', 5, false);
+	else if(litStreetLamps == 5)
+		this.visionVisibility.animations.play('fifth', 5, false);
+	else if(litStreetLamps == 6)
+		this.visionVisibility.animations.play('sixth', 5, false);
+	else if(litStreetLamps > 6)
+		this.visionVisibility.animations.play('seventh', 5, false);
+}
+
 
 function statusBar() {
 		// Set up the bottom GUI 
@@ -207,12 +219,21 @@ function statusBar() {
 		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
 		this.shake.fixedToCamera = true;
 		proteinShakeInventoryIcon.fixedToCamera = true;	
+
+		// Pause button
+		var pauseButton =  game.add.button(1168, game.world.height-32, 'pause', pauseGame, this);
+		pauseButton.fixedToCamera = true;
+		pauseButton.anchor.set(0.5);
+		pauseButton.scale.setTo(0.5);
+		pauseButton.onInputOver.add(this.over, this.pauseButton);
+		pauseButton.onInputOut.add(this.out, this.pauseButton);
 }
 
 function health() {
 	hitEnemy.play(); 
 	lives-=1;	
-	this.playerLives.text = lives + '/5';
+	//this.playerLives.text = lives + '/5';
+	statusBar();
 
 	if(left == true) {
 		player.x += 10;
@@ -223,3 +244,23 @@ function health() {
 		game.add.tween(player).to( {x:player.x-90}, 100, Phaser.Easing.Linear.None, true);
 	}
 }
+
+// function speechBubble(show) {
+// 	if(show == 0) {
+// 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
+// 		this.speechBubble.tint = 0xD0D0D0;
+// 		this.speechBubble.visible = false; 
+// 		this.speechArrow = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speechArrow');
+// 		this.speechArrow.tint = 0xD0D0D0;
+// 		this.speechArrow.visible = false; 
+// 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
+
+// 		this.next = game.add.text(this.speechBubble.x + 460, this.speechBubble.y + 160, '▼', {font: '30px Advent Pro', fill: '#000000'});
+// 		this.next.alpha = 1;
+// 		game.add.tween(this.next).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+// 		this.next.visible = false;
+// 	} else {
+// 		this.speechBubble.visible = true;
+// 		this.speechArrow.visible = true;
+// 	}
+// }

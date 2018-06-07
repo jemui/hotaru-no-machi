@@ -12,6 +12,18 @@ var tutorialState = {
 	create: function() {
 		var background = game.add.sprite(0,-165, 'fAssets', 'breakfastBar');
 
+		if(litStreetLamps == totalLamps) {
+			var background = game.add.sprite(0,-165, 'endGame', 'breakfastBarEnd');
+
+			message = game.add.group(); 
+			message.enableBody = true; 
+
+			this.envelope = message.create(game.world.width-100, game.world.centerY, 'endGame', 'envelope');
+			
+			interact = game.add.text(this.envelope.x, player.y-100, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#E5D6CE'});
+	    	game.add.tween(interact).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+		
+		}
 		// sound effects
 		collectFF = game.add.audio('hitFF');
 		fillLamp = game.add.audio('fillLamp');
@@ -43,24 +55,15 @@ var tutorialState = {
 		this.leftBound = objects.create(-100, game.world.centerY+100, 'spriteBounds'); 
 		this.leftBound.body.immovable = true;
 
-		// Bottom GUI
+		// Inventory
 		statusBar();
-		// this.bottomGUI.scale.setTo(2,1);
-		// var playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
-		// var heart = game.add.sprite(playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
 
-		// this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
-		// var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
+		portal = game.add.group();
+		portal.enableBody = true;
 
-		// this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		// var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
-
-		// this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		// var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
-
-		// this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		// var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
-
+		this.portalToTown = portal.create(100, game.world.centerY-100, 'fAssets', 'portal');
+    	game.add.tween(this.portalToTown).to( { alpha:0.3 }, 5000, Phaser.Easing.Linear.None, true, { alpha: 1}, 5000, Phaser.Easing.Linear.None, true);
+		this.portalToTown.visible = false;
 
 		// Pause Button
 		var pauseButton =  game.add.button(game.world.width-32, game.world.height-32, 'pause', pauseGame, this);
@@ -68,12 +71,6 @@ var tutorialState = {
 		pauseButton.scale.setTo(0.5);
 		pauseButton.onInputOver.add(this.over, this.pauseButton);
 		pauseButton.onInputOut.add(this.out, this.pauseButton);
-
-		// Light/Temporary exit indicator
-		// this.light(game.world.width-100, game.world.height-350);
-		// this.light(game.world.width-100, game.world.height-350);
-		// this.light.aplha = 0;
-		// game.add.tween(this.light).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
 
 		// avoid reappearing when revising this state
 		if(timesVisited == 0) {
@@ -86,13 +83,15 @@ var tutorialState = {
 	    	game.add.tween(this.dialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true);
 
 			// Add player 
-			player = new Player(game, game.world.centerX-200, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+			player = new Player(game, 100, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 			game.add.existing(player);
 
 		//	bot = new Status(game, game.world.centerX-200, game.world.centerY+80, 'bottom', 150, game.world.height-175);
 			game.add.existing(player);
-    	} else {
+    	} else if(timesVisited != 0 && win == false) {
 			// Add player 
+
+    		this.portalToTown.visible = true;
 			player = new Player(game, game.world.width-100, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175); //bugged 
 			game.add.existing(player);
 
@@ -100,12 +99,11 @@ var tutorialState = {
 			this.shopDialogue.alpha = 1;
 	    	game.add.tween(this.shopDialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 1500, Phaser.Easing.Linear.None, true);
     	
-			portal = game.add.group();
-			portal.enableBody = true;
-			this.portalToTown = portal.create(100, game.world.centerY-100, 'fAssets', 'portal');
-			game.add.tween(this.portalToTown).to( { alpha:0.3 }, 5000, Phaser.Easing.Linear.None, true, { alpha: 1}, 5000, Phaser.Easing.Linear.None, true);
-	    
+    	} else {
+    		player = new Player(game, 100, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+			game.add.existing(player);
     	}
+
     	timesVisited++;
 	},
 	light: function(x,y) {
@@ -204,8 +202,8 @@ var tutorialState = {
 	    //game.physics.arcade.collide(this.player, this.boundTop);
 
 	    // Reset the players velocity (movement)
-	    player.body.velocity.x = 0;
-	    player.body.velocity.y = 0;
+	    //player.body.velocity.x = 0;
+	   // player.body.velocity.y = 0;
 
 	    if(timesVisited > 1 && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 	    	this.shopDialogue.text = 'Use the number keys (1-3) to buy your desired item.\nHit the space bar again to close the shop menu!'; 
@@ -213,6 +211,16 @@ var tutorialState = {
 	    	this.shopMenu.anchor.set(0.5);
 	    	showMenu = true; 
 	    	this.shopMenu.visible = true;
+	    }
+
+	    // insert message here
+	    if(win == true) {
+	    	if(game.physics.arcade.overlap(player, message) && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+				shopMessage = game.add.text(player.x+50, player.y-100, 'To Be Implemented Soon!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+				game.add.tween(shopMessage).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
+				game.add.tween(shopMessage).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
+	    		console.log('To Be Implemented Soon!');
+	    	}
 	    }
 
 	    // Buying items
@@ -296,10 +304,6 @@ var tutorialState = {
 	    if(current == 10 && fireflies >= 1) 
 	        this.dialogueOnClick();
 
-	    //temporary mute by pressing 
-	    if(game.input.keyboard.justPressed(Phaser.Keyboard.S)) {
-	    	music.stop();
-	    }
 	},
 	// render: function() {
 	// 	game.debug.spriteInfo(this.player, 32, 32);

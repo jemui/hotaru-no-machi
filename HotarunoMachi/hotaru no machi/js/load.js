@@ -21,6 +21,8 @@ var lanternSize = 5;
 var purificationMilk = 0;
 var healthJuice = 0;
 var proteinShake = 0;
+var totalLamps = 3
+var win = false;
 
 var loadState = {
 	preload: function () {
@@ -46,6 +48,7 @@ var loadState = {
 		game.load.image('menu', 'assets/img/menu.png');
 
 		// game.load.image('player', 'assets/img/player.png');
+		game.load.image('puddleHitBox', 'assets/img/puddleHitBox.png');
 		game.load.image('shopMenu', 'assets/img/shopMenu.png');
 		game.load.image('light', 'assets/img/light.png');
 		game.load.image('bound', 'assets/img/bound.png');

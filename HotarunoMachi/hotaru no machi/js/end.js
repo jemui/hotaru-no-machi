@@ -1,4 +1,3 @@
-
 var endState = {
 	// go to this screen when user runs out of lives
 	create: function() {
