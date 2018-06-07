@@ -14,7 +14,6 @@ var townState = {
 		if(litStreetLamps == totalLamps) {
 			this.background = game.add.sprite(0, -64, 'endGame', 'townBackgroundEnd');
 			this.background = game.add.sprite(1200, -64, 'endGame', 'townBackgroundEnd');
-			this.background.scale.x *= -1;
 
 			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '25px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(bright).to( { y: player.y-150 }, 5500, Phaser.Easing.Linear.None, true);
@@ -95,7 +94,22 @@ var townState = {
 		civ = game.add.group();
 		civ.enableBody = true;
 
-		this.spawnCivilian(1);
+		this.spawnCivilian(1000, game.world.centerY,1);
+
+		this.civDialogue = ['Rumor has it that only two people at the accident site survived.'];
+
+		// speech bubble
+		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
+		this.speechBubble.tint = 0xD0D0D0;
+		this.speechBubble.visible = false; 
+		this.speechArrow = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speechArrow');
+		this.speechArrow.tint = 0xD0D0D0;
+		this.speechArrow.visible = false; 
+		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
+
+		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '25px Advent Pro', fill: '#000000'});
+		game.add.tween(this.next).to( { alpha: 0.5 }, 500, Phaser.Easing.Linear.None, true, {alpha: 1}, 500, Phaser.Easing.Linear.None, true);
+		this.next.visible = false;
 
 		portal = game.add.group();
 		portal.enableBody = true;
@@ -111,7 +125,7 @@ var townState = {
 			player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		}
 
-		
+
 		game.add.existing(player);
 		town2Visited++;
 		last = 'Town2';
@@ -150,26 +164,8 @@ var townState = {
 		else if(litStreetLamps > 6)
 			this.visionVisibility.animations.play('seventh', 5, false);
 
-		// Set up the bottom GUI 
-		var bottomGUI = game.add.sprite(0, game.world.height-64, 'bottom');
-		bottomGUI.scale.setTo(2,2);
-		bottomGUI.fixedToCamera = true;
-
-		var heart = game.add.sprite(200, game.world.height-55, 'assets', 'heartIcon');
-		heart.fixedToCamera = true;
-		playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		playerLives.fixedToCamera = true;
-
-		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
-		this.firefliesCaught.fixedToCamera = true;
-
-		// Pause button
-		var pauseButton =  game.add.button(1168, game.world.height-32, 'pause', pauseGame, this);
-		pauseButton.fixedToCamera = true;
-		pauseButton.anchor.set(0.5);
-		pauseButton.scale.setTo(0.5);
-		pauseButton.onInputOver.add(this.over, this.pauseButton);
-		pauseButton.onInputOut.add(this.out, this.pauseButton);
+		// Inventory
+		statusBar();
 
 		//console.log(game.width);
 		game.camera.follow(player);	// Game camera follows player.
@@ -178,19 +174,19 @@ var townState = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
 			game.state.start('tutorial', true, false);
 	},
-	spawnCivilian: function(n) {
+	spawnCivilian: function(x,y,n) {
 		for(var i = 0; i < n; i++ ){
-			this.civilian = civ.create(1000, game.world.centerY, 'fAssets', 'civilianSprite0001');
+			this.civilian = civ.create(x, y, 'fAssets', 'civilianSprite0001');
 
 
 			this.civilian.animations.add('right',['civilianSprite0002', 'civilianSprite0003'], 5, true);
 			this.civilian.animations.add('left',['civilianSprite0005', 'civilianSprite0006'], 5, true);
 		//console.log(this.enemy.body.velocity.x);
-			game.add.tween(this.civilian).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+			game.add.tween(this.civilian).to( { x: x+200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, x-300, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
 
-			this.civText = game.add.text(700, game.world.centerY-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+			this.civText = game.add.text(this.civilian-300, this.civilian.y-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, x-300, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 			//game.add.tween(civText).to( { alpha: 0 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
 			//game.add.tween(this.enemy).to( { x: game.rnd.integerInRange(0,1200) }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
@@ -388,7 +384,7 @@ var townState = {
 
 	    game.physics.arcade.overlap(player, enemies, health, null, this);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
-  		game.physics.arcade.overlap(player, civ, this.civDialogue);
+  		//game.physics.arcade.overlap(player, civ, this.civDialogue);
 
 		// ----------------------------------------------------------------------
 
@@ -421,6 +417,30 @@ var townState = {
 	    	this.civilian.animations.play('left');
 	    else if( this.civilian.x ==1000)
 	    	this.civilian.animations.play('right');
+
+  		// Check if player is interacting with a citizen 
+  		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.overlap(player, this.civilian)) {
+			// civilian dialogue
+			this.speechBubble.visible = true;
+			this.speechArrow.visible = true;
+			if(civDialogueCounter < this.civDialogue.length)
+				this.dialogue.text = this.civDialogue[civDialogueCounter];
+
+			if(civDialogueCounter == 0 ) {
+				this.next.visible = true;
+			} 
+			else if(civDialogueCounter == this.civDialogue.length) {
+				this.next.visible = false;
+			}
+			civDialogueCounter++;
+  		} 
+  		else if (game.physics.arcade.overlap(player, this.civilian)==false){
+  			civDialogueCounter = 0;
+  			this.dialogue.text = '';
+  			this.speechBubble.visible = false;
+  			this.speechArrow.visible = false;
+  			this.next.visible = false; 
+  		}
 
 	  //  console.log(this.enemy.body.velocity.x);
 	    // attack enemies

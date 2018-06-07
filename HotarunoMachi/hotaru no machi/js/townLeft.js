@@ -16,7 +16,6 @@ var townLeftState = {
 		if(litStreetLamps == totalLamps) {
 			this.background = game.add.sprite(0, -64, 'endGame', 'townBackgroundEnd');
 			this.background = game.add.sprite(1200, -64, 'endGame', 'townBackgroundEnd');
-			this.background.scale.x *= -1;
 
 			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '25px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(bright).to( { y: player.y-150 }, 5500, Phaser.Easing.Linear.None, true);
@@ -87,7 +86,7 @@ var townLeftState = {
 		streetLampGroup.enableBody = true; 
 
 		if(townLeftVisited < 1) {
-			this.spawnStreetLamp(1);
+			this.spawnStreetLamp(1720);
 			this.spawnFirefly(game.rnd.integerInRange(3,8));
 
 			// shopEntranceSignal = game.add.text(1440, game.world.centerY-210, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 

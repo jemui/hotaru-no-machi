@@ -12,17 +12,14 @@ var tutorialState = {
 	create: function() {
 		var background = game.add.sprite(0,-165, 'fAssets', 'breakfastBar');
 
+		// message = game.add.group(); 
+		// message.enableBody = true; 
+
+		// this.envelope = message.create(game.world.centerX, game.world.centerY-95, 'endGame', 'envelope');
+		// this.envelope.visible = false;
+
 		if(litStreetLamps == totalLamps) {
 			var background = game.add.sprite(0,-165, 'endGame', 'breakfastBarEnd');
-
-			message = game.add.group(); 
-			message.enableBody = true; 
-
-			this.envelope = message.create(game.world.width-100, game.world.centerY, 'endGame', 'envelope');
-			
-			interact = game.add.text(this.envelope.x, player.y-100, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#E5D6CE'});
-	    	game.add.tween(interact).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
-		
 		}
 		// sound effects
 		collectFF = game.add.audio('hitFF');
@@ -100,6 +97,16 @@ var tutorialState = {
 	    	game.add.tween(this.shopDialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 1500, Phaser.Easing.Linear.None, true);
     	
     	} else {
+    		//this.envelope = game.add.sprite(game.world.centerX, game.world.centerY-95, 'endGame', 'envelope');
+    		this.envelope = game.add.sprite(game.world.centerX, game.world.centerY+90, 'endGame', 'envelope');
+    		//this.envelope.enableBody = true;
+    		//this.envelope.immovable = true;
+    		//this.envelope.body.setSize(146, 500, 0,0);
+
+			this.interact = game.add.text(this.envelope.x, this.envelope.y-50, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#FFFFFF'});
+	    	game.add.tween(this.interact).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
+
     		player = new Player(game, 100, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 			game.add.existing(player);
     	}
@@ -205,8 +212,8 @@ var tutorialState = {
 	    //player.body.velocity.x = 0;
 	   // player.body.velocity.y = 0;
 
-	    if(timesVisited > 1 && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
-	    	this.shopDialogue.text = 'Use the number keys (1-3) to buy your desired item.\nHit the space bar again to close the shop menu!'; 
+	    if(timesVisited > 1 && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && win == false) {
+	    	this.shopDialogue.text = 'Use the number keys (1-3) to buy your desired item.\nHit the space bar (x for now) again to close the shop menu!'; 
 	    	this.shopMenu = game.add.sprite(game.world.centerX, game.world.centerY-75, 'shopMenu');
 	    	this.shopMenu.anchor.set(0.5);
 	    	showMenu = true; 
@@ -214,8 +221,8 @@ var tutorialState = {
 	    }
 
 	    // insert message here
-	    if(win == true) {
-	    	if(game.physics.arcade.overlap(player, message) && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+	    if(win == true) {;
+	    	if(game.physics.arcade.overlap(player, this.envelope) && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 				shopMessage = game.add.text(player.x+50, player.y-100, 'To Be Implemented Soon!',{font: '25px Advent Pro', fill: '#E5D6CE'});
 				game.add.tween(shopMessage).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 				game.add.tween(shopMessage).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
@@ -234,8 +241,15 @@ var tutorialState = {
 	    	fireflies=fireflies-2; 
 			statusBar();
 
+			var bought = game.add.text(player.x-150, player.y-150, 'You bought purification milk. Close the menu and press 1 to use it.',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
 	    	console.log('You bought purification milk. Close the menu and press 1 to use it.');
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies < 2) {
+			var bought = game.add.text(player.x-150, player.y-150, 'You do not have enough fireflies.',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
+
 	    	console.log('You do not have enough fireflies.');
 	    }
 
@@ -249,9 +263,22 @@ var tutorialState = {
 	    	fireflies=fireflies-3; 
 			statusBar();
 
+			var bought = game.add.text(player.x-150, player.y-150, 'You bought health juice.',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
 	    	console.log('You bought health juice.');
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && fireflies < 3) {
+			var bought = game.add.text(player.x-150, player.y-150, 'You do not have enough fireflies.',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
 	    	console.log('You do not have enough fireflies.');
+	    }
+
+	    // use health juice
+	    if(showMenu == false && healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives < 5) {
+	    	healthJuice--;
+	    	lives = 5; 
+	    	statusBar();
 	    }
 
 
@@ -265,16 +292,32 @@ var tutorialState = {
 	    	fireflies=fireflies-5; 
 			statusBar();
 
+			var bought = game.add.text(player.x-150, player.y-150, 'You bought a storage upgrade',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
 
 	    	console.log('You bought a storage upgrade');
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && fireflies < 5) {
+			var bought = game.add.text(player.x-150, player.y-150, 'You do not have enough fireflies.',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
+
 	    	console.log('You do not have enough fireflies.');
 	    }
 
+	    // use protein shake
+	    if(showMenu == false && proteinShake > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.THREE)) {
+	    	lanternSize += 5;
+
+			var bought = game.add.text(player.x-150, player.y-150, 'You can now collect up to '+lanternSize +' fireflies!',{font: '25px Advent Pro', fill: '#000000'});
+	    	game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
+
+	    	statusBar();
+	    }
 
 	    // close the shop menu
 	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.X)) {
 	    	showMenu = false; 
+	    	console.log('x');
 	    	//this.shopMenu = game.add.sprite(game.world.centerX, game.world.centerY-75, 'shopMenu');
 	    	//this.shopMenu.anchor.set(0.5);
 	    	this.shopMenu.visible = false;
@@ -305,7 +348,10 @@ var tutorialState = {
 	        this.dialogueOnClick();
 
 	},
-	// render: function() {
+	 render: function() {
+	 	// if(win == true) {
+	 	// 	game.debug.body(this.envelope); 
+	 	// }
 	// 	game.debug.spriteInfo(this.player, 32, 32);
-	// }
+	 }
 }
