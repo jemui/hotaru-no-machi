@@ -14,7 +14,7 @@ var playState = {
     	game.world.setBounds(0, 0, 2400, 700); // set bound of the game world. (x, y, width, height). Source: Phaser Tutorial
 
 		this.background = game.add.sprite(0, -64, 'fAssets', 'shopExterior');
-		this.background = game.add.sprite(2400, -32, 'fAssets', 'townBackground');
+		this.background = game.add.sprite(2400, -25, 'fAssets', 'townBackground');
 		this.background.scale.x *= -1;
 
 		// sound effects
@@ -22,6 +22,7 @@ var playState = {
 		fillLamp = game.add.audio('fillLamp');
 		depositFF = game.add.audio('depositFF');
 		enemyDies = game.add.audio('enemyDies');
+		//playerDies = game.add.audio('playerDies');
 		hitEnemy = game.add.audio('hitEnemy');
 		shootFF = game.add.audio('shootFF');	
 
@@ -80,12 +81,13 @@ var playState = {
 			this.spawnStreetLamp();
 		} else {
 			this.spawnStreetLamp();		//gets reset :c when leaving map.. 
-			this.spawnFirefly(game.rnd.integerInRange(5,7));
+			this.spawnFirefly(game.rnd.integerInRange(0,2));
 		}
 
 		// Enemy group 
 		enemies = game.add.group();
 		enemies.enableBody = true;
+
 
 	//	if (townEnemy == false)
 		//	this.spawnEnemy(1);
@@ -116,7 +118,7 @@ var playState = {
 		this.spawnCivilian(750, game.world.centerY, 1); 
 
 		this.civDialogue = ['Hey you! Are you a bit lost?', 'Hey you! Are you a bit lost? I see a dark street lamp down this path that might help you see better if you can figure out how to get it working again.',
-							'Oh! And a few more important things. If you see some strange looking..apples.. do not hestiate to attack them with the "A" key.',
+							'Oh! And a few more important things. If you see some strange looking..apples.. do not hestiate to attack them with the "A" key with your fireflies.',
 							'There are some strange puddles around the town, which might be linked to their hositility, so try not to get killed out there!' ];
 
 
@@ -128,6 +130,9 @@ var playState = {
 		this.speechArrow.visible = false; 
 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
 
+		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '25px Advent Pro', fill: '#000000'});
+		game.add.tween(this.next).to( { alpha: 0.5 }, 500, Phaser.Easing.Linear.None, true, {alpha: 1}, 500, Phaser.Easing.Linear.None, true);
+		this.next.visible = false;
 		//PlayerSprite
 		if (last == 'townLeft') {
 			player = new Player(game, 150, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
@@ -203,43 +208,15 @@ var playState = {
 		// set up looping event (delay, callback, context, arguments)
 		timer = game.time.create();
 		timer.loop(10500, function() { 
-			console.log('loop event at: ' + timer.ms);
+			//console.log('loop event at: ' + timer.ms);
 			console.log(game.rnd.integerInRange(1, 10));
 			if(game.rnd.integerInRange(1, 10)%3==0) 
 
-				this.spawnFirefly(game.rnd.integerInRange(5,7));
+				this.spawnFirefly(game.rnd.integerInRange(0,2));
 		}, this);
 		timer.start(); 
 
-		// Set up the bottom GUI 
-		var bottomGUI = game.add.sprite(0, game.world.height-64, 'bottom');
-		bottomGUI.scale.setTo(2,2);
-		bottomGUI.fixedToCamera = true;
-
-		var playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var heart = game.add.sprite(playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
-		playerLives.fixedToCamera = true;
-		heart.fixedToCamera = true;
-
-		this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
-		this.firefliesCaught.fixedToCamera = true;
-		fireflyIcon.fixedToCamera = true;
-
-		this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
-		this.pureMilk.fixedToCamera = true;
-		milkInventoryIcon.fixedToCamera = true;
-
-		this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
-		this.juice.fixedToCamera = true;
-		juiceInventoryIcon.fixedToCamera = true;
-
-		this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
-		this.shake.fixedToCamera = true;
-		proteinShakeInventoryIcon.fixedToCamera = true;
+		statusBar();
 
 
 	//	playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
@@ -279,6 +256,7 @@ var playState = {
 			civText = game.add.text(x-250, y-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
 		//	game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 			game.add.tween(civText).to( { alpha: 0.5 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+
 		}
 	},
 	spawnEnemy: function(n) {
@@ -329,19 +307,6 @@ var playState = {
     	button.frame = 0;
 	},
 
-	health: function(enemy) {
-		hitEnemy.play(); 
-		lives-=0.5;	// sometimes subtracts 0.5, sometimes 1 
-		playerLives.text = lives;
-
-		if(player.x >= enemy.x)
-		//	game.add.tween(player).to( {x:player.x+200}, 100, Phaser.Easing.Linear.None, true);
-	//	else
-			game.add.tween(player).to( {x:player.x-200}, 100, Phaser.Easing.Linear.None, true);
-		//else
-		//game.add.tween(player).to( {x:player.x+200}, 100, Phaser.Easing.Linear.None, true);
-	},
-
 	killEnemy: function(player, enemy) {
 		enemy.kill();
 		enemyDies.play();
@@ -363,7 +328,7 @@ var playState = {
 
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
-		this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
+		statusBar();  //update the inventory
 	},
 
 	fillStreetLamp: function(player, streetLamp) {
@@ -371,7 +336,8 @@ var playState = {
 		if((fireflies > 0) && (townLampFill < 5) && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
 			depositFF.play();
 			fireflies--;	// add to lantern
-			this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
+			statusBar();
+			//this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			townLampFill++;
 
 			full = false;
@@ -434,7 +400,10 @@ var playState = {
 
 		//If player runs out of lives
 		if(lives <= 0){
+			playerDies.play();
+			lives = 1; //to avoid the playerDies sound from playing repeatedly 
 			game.state.start('end');
+
 			music.stop();
 		}
 
@@ -448,15 +417,22 @@ var playState = {
   			playerFF--;
   		}
 
+
+
   		// Check if player is interacting with a citizen 
   		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.overlap(player, this.civilian)) {
 			// civilian dialogue
-
-
 			this.speechBubble.visible = true;
 			this.speechArrow.visible = true;
 			if(civDialogueCounter < this.civDialogue.length)
 				this.dialogue.text = this.civDialogue[civDialogueCounter];
+
+			if(civDialogueCounter == 0 ) {
+				this.next.visible = true;
+			} 
+			else if(civDialogueCounter == this.civDialogue.length) {
+				this.next.visible = false;
+			}
 		//	else
 			//	dialogue.text = this.civDialogue[civDialogueCounter];
 
@@ -466,6 +442,7 @@ var playState = {
   			this.dialogue.text = '';
   			this.speechBubble.visible = false;
   			this.speechArrow.visible = false;
+  			this.next.visible = false; 
   		}
 
   		// collision detection for portals
@@ -477,7 +454,7 @@ var playState = {
   		game.physics.arcade.overlap(player, this.streetLamp, this.fillStreetLamp, null, this);
 	    game.physics.arcade.collide(player, this.bottomGUI);
 	    
-	    game.physics.arcade.overlap(player, enemies, this.health, null, this);
+	    game.physics.arcade.overlap(player, enemies, health, null, this);
 	    game.physics.arcade.collide(player, bounds);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
 

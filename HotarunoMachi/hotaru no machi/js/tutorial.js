@@ -44,21 +44,22 @@ var tutorialState = {
 		this.leftBound.body.immovable = true;
 
 		// Bottom GUI
-		this.bottomGUI.scale.setTo(2,1);
-		var playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var heart = game.add.sprite(playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
+		statusBar();
+		// this.bottomGUI.scale.setTo(2,1);
+		// var playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
+		// var heart = game.add.sprite(playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
 
-		this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
+		// this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		// var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
 
-		this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
+		// this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		// var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
 
-		this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
+		// this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		// var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
 
-		this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
+		// this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		// var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
 
 
 		// Pause Button
@@ -98,6 +99,12 @@ var tutorialState = {
 			this.shopDialogue = game.add.text(50, game.world.height-155, "Welcome back! To buy supplies from us, hit the space bar!", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			this.shopDialogue.alpha = 1;
 	    	game.add.tween(this.shopDialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 1500, Phaser.Easing.Linear.None, true);
+    	
+			portal = game.add.group();
+			portal.enableBody = true;
+			this.portalToTown = portal.create(100, game.world.centerY-100, 'fAssets', 'portal');
+			game.add.tween(this.portalToTown).to( { alpha:0.3 }, 5000, Phaser.Easing.Linear.None, true, { alpha: 1}, 5000, Phaser.Easing.Linear.None, true);
+	    
     	}
     	timesVisited++;
 	},
@@ -175,7 +182,7 @@ var tutorialState = {
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
 		//console.log(playerFF);
-		this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
+		statusBar();	// update inventory
 	},
 	update: function() {
 	   // Read input from keyboard to move the player
@@ -217,8 +224,7 @@ var tutorialState = {
 			}
 	    	//shootFF.play(); 
 	    	fireflies=fireflies-2; 
-			this.firefliesCaught.text = fireflies+'/'+lanternSize;
-			this.pureMilk.text = purificationMilk;
+			statusBar();
 
 	    	console.log('You bought purification milk. Close the menu and press 1 to use it.');
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies < 2) {
@@ -233,8 +239,7 @@ var tutorialState = {
 			}
 	    	//shootFF.play(); 
 	    	fireflies=fireflies-3; 
-			this.firefliesCaught.text = fireflies+'/'+lanternSize;
-			this.juice.text = healthJuice;
+			statusBar();
 
 	    	console.log('You bought health juice.');
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && fireflies < 3) {
@@ -250,8 +255,7 @@ var tutorialState = {
 			}
 	    	//shootFF.play(); 
 	    	fireflies=fireflies-5; 
-			this.firefliesCaught.text = fireflies+'/'+lanternSize;
-			this.shake.text = proteinShake;
+			statusBar();
 
 
 	    	console.log('You bought a storage upgrade');

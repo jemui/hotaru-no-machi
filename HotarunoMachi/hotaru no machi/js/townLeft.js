@@ -1,6 +1,7 @@
 var townLeftLampFill = 0;  
 var townLeftVisited = 0;
 var townLeftLampLit = false; 
+var purifiedLeft = false; 
 // 30-32 gradient images to use. array of 4 street lamps. stores litStreetLamps 
 // create animations in the states. animation played depends on # lit lamps and position in array
 
@@ -18,6 +19,7 @@ var townLeftState = {
 		enemyDies = game.add.audio('enemyDies');
 		hitEnemy = game.add.audio('hitEnemy');
 		shootFF = game.add.audio('shootFF');	
+		playerDies = game.add.audio('playerDies');
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -46,6 +48,18 @@ var townLeftState = {
 
 		this.rightBound = bounds.create(2400, game.world.centerY+100, 'spriteBounds'); 
 		this.rightBound.body.immovable = true;
+
+		// toxic puddle
+		puddle = game.add.group();
+		puddle.enableBody = true;
+
+		// create toxic puddle if the puddle has not been purified yet
+		if(purifiedLeft == false) {
+			this.toxicPuddle = puddle.create(700, 550, 'fAssets', 'doublePuddle');
+			this.toxicPuddle.body.immovable = true;
+
+			//setsize
+		}
 
 		// Add street lamp.
 		streetLampGroup = game.add.group();
@@ -86,28 +100,15 @@ var townLeftState = {
 		civ = game.add.group();
 		civ.enableBody = true;
 
-		this.spawnCivilian(1000, game.world.centerY+50, 1);
+		this.spawnCivilian(1500, game.world.centerY+50, 1);
 
 		portal = game.add.group();
 		portal.enableBody = true;
 		this.portalToTown = portal.create(2100, game.world.centerY-30, 'fAssets', 'portal');
 
-//		this.portalTotownLeft = portal.create(game.world.centerX+1000, game.world.centerY, 'light');
-
 		//Player
-		//PlayerSprite
 		player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-
-
-
 		game.add.existing(player);
-		// player = game.add.sprite(2200, game.world.height-175, 'fAssets', 'playerSprite0001');
-		// player.enableBody = true;
-		// player.anchor.set(0.5);
-		// player.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-		// player.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
-
-		// game.physics.arcade.enable(player); // Enable physics on the player
 
 		// visibility. Only GUI related elements should go after this
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
@@ -142,13 +143,31 @@ var townLeftState = {
 		bottomGUI.scale.setTo(2,2);
 		bottomGUI.fixedToCamera = true;
 
-		var heart = game.add.sprite(200, game.world.height-55, 'assets', 'heartIcon');
+		this.playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var heart = game.add.sprite(this.playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
+		this.playerLives.fixedToCamera = true;
 		heart.fixedToCamera = true;
-		playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
-		playerLives.fixedToCamera = true;
 
-		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
 		this.firefliesCaught.fixedToCamera = true;
+		fireflyIcon.fixedToCamera = true;
+
+		this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
+		this.pureMilk.fixedToCamera = true;
+		milkInventoryIcon.fixedToCamera = true;
+
+		this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
+		this.juice.fixedToCamera = true;
+		juiceInventoryIcon.fixedToCamera = true;
+
+		this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
+		this.shake.fixedToCamera = true;
+		proteinShakeInventoryIcon.fixedToCamera = true;
+
 
 		// Pause button
 		var pauseButton =  game.add.button(1168, game.world.height-32, 'pause', pauseGame, this);
@@ -239,13 +258,17 @@ var townLeftState = {
 
 	health: function(enemy) {
 		hitEnemy.play(); 
-		lives-=0.5;	// sometimes subtracts 0.5, sometimes 1 
-		playerLives.text = lives;
+		lives-=1;	// sometimes subtracts 0.5, sometimes 1 
+		this.playerLives.text = lives;
 
-		if(player.x >= enemy.x)
-			game.add.tween(player).to( {x:player.x+200}, 100, Phaser.Easing.Linear.None, true);
-		else
-			game.add.tween(player).to( {x:player.x-200}, 100, Phaser.Easing.Linear.None, true);
+		if(left == true) {
+			player.x += 10;
+			game.add.tween(player).to( {x:player.x+90}, 100, Phaser.Easing.Linear.None, true);
+		}
+		else {
+			player.x -= 10;
+			game.add.tween(player).to( {x:player.x-90}, 100, Phaser.Easing.Linear.None, true);
+		}
 	},
 
 	killEnemy: function(player, enemy) {
@@ -268,7 +291,7 @@ var townLeftState = {
 
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
-		this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+		this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 	},
 
 	fillStreetLamp: function(player, streetLamp) {
@@ -276,7 +299,7 @@ var townLeftState = {
 		if((fireflies > 0) && (townLeftLampFill < 5) && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
 			depositFF.play();
 			fireflies--;	// add to lantern
-			this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+			this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			townLeftLampFill++;
 
 			full = false;
@@ -336,7 +359,10 @@ var townLeftState = {
 
 		//If player runs out of lives
 		if(lives <= 0){
+			playerDies.play();
+			lives = 1; //to avoid the playerDies sound from playing repeatedly 
 			game.state.start('end');
+
 			music.stop();
 		}
 
@@ -362,6 +388,8 @@ var townLeftState = {
 	    game.physics.arcade.overlap(player, enemies, this.health, null, this);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
   		game.physics.arcade.overlap(player, civ, this.civDialogue);
+
+game.physics.arcade.collide(player, puddle, health, null, this); 
 
 		// ----------------------------------------------------------------------
 
@@ -390,10 +418,10 @@ var townLeftState = {
 	   //  	this.enemy.animations.play('left');
 	   //  else if( this.enemy.x ==0)
 	   //  	this.enemy.animations.play('right');
-  		if( this.civilian.x == 1200)
-	    	this.civilian.animations.play('left');
-	    else if( this.civilian.x ==1000)
-	    	this.civilian.animations.play('right');
+  		// if( this.civilian.x == 1200)
+	   //  	this.civilian.animations.play('left');
+	   //  else if( this.civilian.x ==1000)
+	   //  	this.civilian.animations.play('right');
 
 	  //  console.log(this.enemy.body.velocity.x);
 	    // attack enemies
@@ -416,7 +444,7 @@ var townLeftState = {
 					playerFF--;
 				}
 
-				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			} else {
 				this.firefly2 = attack.create(player.x-65, player.centerY, 'fAssets', 'singleFirefly');
 				game.add.tween(this.firefly2).to( { x: player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
@@ -428,7 +456,7 @@ var townLeftState = {
 					console.log('You ran out of fireflies. Try collecting more!'); 
 					playerFF--;
 				}
-				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 
 			}
 	    }

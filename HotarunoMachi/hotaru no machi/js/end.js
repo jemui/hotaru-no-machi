@@ -5,6 +5,9 @@ var endState = {
 		// set the background color 
 		game.stage.setBackgroundColor('#403C38');
 
+		playerDies = game.add.audio('playerDies');
+		playerDies.play();
+
 		var title = game.add.text(game.world.centerX/3, game.world.centerY/4, 'u ded T-T', {font: '40px Advent Pro', fill: '#E5D9C9'});
 		title.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
 		var lineDec = game.add.text(game.world.centerX/3+35, game.world.centerY/4+15, '_____________________', {font: '40px Advent Pro', fill: '#E5D9C9'});
@@ -71,7 +74,9 @@ var endState = {
 	 	purificationMilk = 0;
 		healthJuice = 0;
 		proteinShake = 0;
-		
+		purifiedLeft = false; 
+
+		playerDies.stop();
 		//go back to the title screen
 		game.state.start('title'); 
 	},

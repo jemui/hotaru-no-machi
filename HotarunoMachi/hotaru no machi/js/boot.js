@@ -89,11 +89,6 @@ window.onkeydown = function(event) {
 	var keycode = event.keyCode || event.which;	
 	if(keycode === Phaser.Keyboard.P) {
 		pauseGame();
-		// if(game.paused == true) {
-		// 	this.pauseMenu.alpha = 1;
-		// 	this.resumeButton.alpha = 1;
-		// 	this.returntoTitle.alpha =1; 
-		// }
 	}
 }
 
@@ -127,11 +122,6 @@ function pauseGame() {
 	}
 }
 
-// function resumeOnClick(){
-// 	console.log(game.paused);
-// 	pauseGame();
-// }
-
 function resumeOnClick(){
 	// Make menu invisible and toggle pause state
 	this.pauseMenu.alpha = 0;
@@ -164,4 +154,72 @@ function over(button) {
 
 function out(button) {
     button.frame = 0;
+}
+
+// Game functions shared by all states 
+// function speechBubble(show) {
+// 	if(show == 0) {
+// 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
+// 		this.speechBubble.tint = 0xD0D0D0;
+// 		this.speechBubble.visible = false; 
+// 		this.speechArrow = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speechArrow');
+// 		this.speechArrow.tint = 0xD0D0D0;
+// 		this.speechArrow.visible = false; 
+// 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
+
+// 		this.next = game.add.text(this.speechBubble.x + 460, this.speechBubble.y + 160, '▼', {font: '30px Advent Pro', fill: '#000000'});
+// 		this.next.alpha = 1;
+// 		game.add.tween(this.next).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
+// 		this.next.visible = false;
+// 	} else {
+// 		this.speechBubble.visible = true;
+// 		this.speechArrow.visible = true;
+// 	}
+// }
+
+function statusBar() {
+		// Set up the bottom GUI 
+		var bottomGUI = game.add.sprite(0, game.world.height-64, 'bottom');
+		bottomGUI.scale.setTo(2,2);
+		bottomGUI.fixedToCamera = true;
+
+		this.playerLives = game.add.text(20, game.world.height-45, lives + '/5',{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var heart = game.add.sprite(this.playerLives.x+40, game.world.height-55, 'assets', 'heartIcon');
+		this.playerLives.fixedToCamera = true;
+		heart.fixedToCamera = true;
+
+		this.firefliesCaught = game.add.text(heart.x+65, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var fireflyIcon = game.add.sprite(this.firefliesCaught.x+40, game.world.height-58, 'fAssets', 'singleFirefly');
+		this.firefliesCaught.fixedToCamera = true;
+		fireflyIcon.fixedToCamera = true;
+
+		this.pureMilk = game.add.text(fireflyIcon.x+65, game.world.height-45, purificationMilk,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var milkInventoryIcon = game.add.sprite(this.pureMilk.x+20, game.world.height-58, 'endGame', 'milkInventoryIcon');
+		this.pureMilk.fixedToCamera = true;
+		milkInventoryIcon.fixedToCamera = true;
+
+		this.juice = game.add.text(milkInventoryIcon.x+60, game.world.height-45, healthJuice,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var juiceInventoryIcon = game.add.sprite(this.juice.x+20, game.world.height-58, 'endGame', 'juiceInventoryIcon');
+		this.juice.fixedToCamera = true;
+		juiceInventoryIcon.fixedToCamera = true;
+
+		this.shake = game.add.text(juiceInventoryIcon.x+60, game.world.height-45, proteinShake,{font: '25px Advent Pro', fill: '#E5D6CE'});
+		var proteinShakeInventoryIcon = game.add.sprite(this.shake.x+20, game.world.height-58, 'endGame', 'proteinShakeInventoryIcon');
+		this.shake.fixedToCamera = true;
+		proteinShakeInventoryIcon.fixedToCamera = true;	
+}
+
+function health() {
+	hitEnemy.play(); 
+	lives-=1;	
+	this.playerLives.text = lives + '/5';
+
+	if(left == true) {
+		player.x += 10;
+		game.add.tween(player).to( {x:player.x+90}, 100, Phaser.Easing.Linear.None, true);
+	}
+	else {
+		player.x -= 10;
+		game.add.tween(player).to( {x:player.x-90}, 100, Phaser.Easing.Linear.None, true);
+	}
 }

@@ -18,7 +18,8 @@ var townState = {
 		enemyDies = game.add.audio('enemyDies');
 		hitEnemy = game.add.audio('hitEnemy');
 		shootFF = game.add.audio('shootFF');	
-
+		playerDies = game.add.audio('playerDies');
+		
 		// Add Firefly object to screen
 		object = game.add.group(); 
 		object.enableBody = true; 
@@ -140,7 +141,7 @@ var townState = {
 		this.playerLives = game.add.text(218, game.world.height-45, lives,{font: '25px Advent Pro', fill: '#E5D6CE'});
 		this.playerLives.fixedToCamera = true;
 
-		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/5 Fireflies Caught'),{font: '25px Advent Pro', fill: '#E5D6CE'});
+		this.firefliesCaught = game.add.text(20, game.world.height-45, (fireflies+'/'+lanternSize),{font: '25px Advent Pro', fill: '#E5D6CE'});
 		this.firefliesCaught.fixedToCamera = true;
 
 		// Pause button
@@ -233,13 +234,17 @@ var townState = {
 
 	health: function(enemy) {
 		hitEnemy.play(); 
-		lives-=0.5;	// sometimes subtracts 0.5, sometimes 1 
+		lives-=1;	// sometimes subtracts 0.5, sometimes 1 
 		this.playerLives.text = lives;
 
-		if(this.player.x >= enemy.x)
-			game.add.tween(this.player).to( {x:this.player.x+200}, 100, Phaser.Easing.Linear.None, true);
-		else
-			game.add.tween(this.player).to( {x:this.player.x-200}, 100, Phaser.Easing.Linear.None, true);
+		if(left == true) {
+			player.x += 10;
+			game.add.tween(player).to( {x:player.x+90}, 100, Phaser.Easing.Linear.None, true);
+		}
+		else {
+			player.x -= 10;
+			game.add.tween(player).to( {x:player.x-90}, 100, Phaser.Easing.Linear.None, true);
+		}
 	},
 
 	killEnemy: function(player, enemy) {
@@ -262,7 +267,7 @@ var townState = {
 
 			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
-		this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+		this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 	},
 
 	fillStreetLamp: function(player, streetLamp) {
@@ -270,7 +275,7 @@ var townState = {
 		if((fireflies > 0) && (town2LampFill < 5) && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
 			depositFF.play();
 			fireflies--;	// add to lantern
-			this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+			this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			town2LampFill++;
 
 			full = false;
@@ -330,7 +335,10 @@ var townState = {
 
 		//If player runs out of lives
 		if(lives <= 0){
+			playerDies.play();
+			lives = 1; //to avoid the playerDies sound from playing repeatedly 
 			game.state.start('end');
+
 			music.stop();
 		}
 
@@ -353,7 +361,7 @@ var townState = {
 	    
 	    game.physics.arcade.collide(this.player, bounds);
 
-	    game.physics.arcade.overlap(this.player, enemies, this.health, null, this);
+	    game.physics.arcade.overlap(player, enemies, health, null, this);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
   		game.physics.arcade.overlap(this.player, civ, this.civDialogue);
 
@@ -410,7 +418,7 @@ var townState = {
 					playerFF--;
 				}
 
-				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 			} else {
 				this.firefly2 = attack.create(this.player.x-65, this.player.centerY, 'fAssets', 'singleFirefly');
 				game.add.tween(this.firefly2).to( { x: this.player.x-450 }, 1000, Phaser.Easing.Linear.None, true);
@@ -422,7 +430,7 @@ var townState = {
 					console.log('You ran out of fireflies. Try collecting more!'); 
 					playerFF--;
 				}
-				this.firefliesCaught.text = fireflies+'/5 Fireflies Caught';	// update text
+				this.firefliesCaught.text = fireflies+'/'+lanternSize;	// update text
 
 			}
 	    }

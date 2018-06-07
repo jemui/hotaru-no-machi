@@ -1,8 +1,30 @@
+var returnedToTitle = 0;
 var titleState = {
 	// goes to title state when the game is done loading
 	create: function() {
 		// set the background color 
 		//game.stage.setBackgroundColor('#403C38');
+
+		//reset global variables upon returning to title
+		if(returnedToTitle > 0) {
+			lives = 5;
+			playerFF = 0;
+			fireflies = 0;
+			timesVisited = 0;
+			townVisited = 0;
+			townLampLit = false;
+			townLampFill = 0;
+			litStreetLamps = 0;
+			tutSpawned = false;
+			current = 0;
+			full = false; 
+			lanternSize = 5;
+		 	purificationMilk = 0;
+			healthJuice = 0;
+			proteinShake = 0;
+			purifiedLeft = false; 
+		}
+		returnedToTitle++;
 		spashScreen = game.add.sprite(0,0, 'splashScreen');
 
 		var startButton = game.add.button(155, game.world.centerY/2+160, 'start', this.actionOnClick, this);
