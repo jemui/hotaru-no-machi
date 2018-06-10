@@ -62,14 +62,14 @@ var loadState = {
 		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
 		game.load.atlas('fAssets', 'assets/img/FinalArtAssets.png', 'assets/img/FinalArtAssets.json');
 		game.load.atlas('endGame', 'assets/img/endGame.png', 'assets/img/endGame.json');
-	//	game.load.atlas('splashScreen', 'assets/img/titleScreen.png', 'assets/img/titleScreen.json');
+		game.load.atlas('fade', 'assets/img/fade.png', 'assets/img/fade.json');
 
 		// Load audio
 		game.load.audio('bgm', ['assets/audio/bkgdMusic.ogg']);
 		game.load.audio('depositFF', ['assets/audio/depositff.ogg']);
 		game.load.audio('fillLamp', ['assets/audio/filledLamp.ogg']);
 		game.load.audio('hitFF', ['assets/audio/hitFF.ogg']);
-		game.load.audio('fillStreet', ['assets/audio/hitFF.ogg']);	
+		game.load.audio('fillStreet', ['assets/audio/filledStreet.ogg']);	
 		game.load.audio('playerDies', ['assets/audio/playerDies.ogg']);	
 		game.load.audio('enemyDies', ['assets/audio/enemyDies.ogg']);
 		game.load.audio('hitEnemy', ['assets/audio/hitEnemy.ogg']);

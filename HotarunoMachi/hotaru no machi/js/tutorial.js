@@ -12,10 +12,10 @@ var tutorialState = {
 	create: function() {
 		var background = game.add.sprite(0,-165, 'fAssets', 'breakfastBar');
 
-		// message = game.add.group(); 
-		// message.enableBody = true; 
+		 message = game.add.group(); 
+		 message.enableBody = true; 
 
-		// this.envelope = message.create(game.world.centerX, game.world.centerY-95, 'endGame', 'envelope');
+		 this.envelope = message.create(-100, -100, 'endGame', 'envelope');
 		// this.envelope.visible = false;
 
 		if(litStreetLamps == totalLamps) {
@@ -99,8 +99,8 @@ var tutorialState = {
     	} else {
     		//this.envelope = game.add.sprite(game.world.centerX, game.world.centerY-95, 'endGame', 'envelope');
     		this.envelope = game.add.sprite(game.world.centerX, game.world.centerY+90, 'endGame', 'envelope');
-    		//this.envelope.enableBody = true;
-    		//this.envelope.immovable = true;
+    		this.envelope.enableBody = true;
+    		this.envelope.immovable = true;
     		//this.envelope.body.setSize(146, 500, 0,0);
 
 			this.interact = game.add.text(this.envelope.x, this.envelope.y-50, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#FFFFFF'});
@@ -138,7 +138,7 @@ var tutorialState = {
 		}
 
 		if(current == 7) {
-			collectFF.play();
+			collectFF.play();	
 		}
 		// current = 10 starts the collection tutorial
 		if(current < speech.length) 
@@ -173,7 +173,7 @@ var tutorialState = {
     	button.frame = 0;
 	},	
 	town: function() {
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.W) && current > 15)
 			game.state.start('play'); 
 	},
 	collectFirefly: function(player, firefly) {
@@ -188,6 +188,15 @@ var tutorialState = {
 		}
 		//console.log(playerFF);
 		statusBar();	// update inventory
+	},
+	readEnvelope: function() {
+
+		// fade to win state
+		var fade = game.add.sprite(0,0, 'fade', 'fade_000000');
+		fade.animations.add('fadeToBlack', ['fade_000001', 'fade_000002', 'fade_00003', 'fade_000004', 'fade_000005', 'fade_000006', 'fade_000008', 'fade_000009', 'fade_000010', 'fade_000011', 'fade_000012'
+							, 'fade_000013', 'fade_000014', 'fade_000015', 'fade_000016', 'fade_000017', 'fade_000018', 'fade_000019', 'fade_000020', 'fade_000021'], 12, false);
+		fade.play('fadeToBlack');
+
 	},
 	update: function() {
 	   // Read input from keyboard to move the player

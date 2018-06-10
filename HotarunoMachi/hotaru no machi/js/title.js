@@ -96,5 +96,8 @@ var titleState = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.Q)) {
 			game.state.start('play');
 		}
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.C)) {
+			game.state.start('win');
+		}
 	},
 };

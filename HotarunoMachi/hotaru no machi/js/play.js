@@ -34,7 +34,8 @@ var playState = {
 		enemyDies = game.add.audio('enemyDies');
 		//playerDies = game.add.audio('playerDies');
 		hitEnemy = game.add.audio('hitEnemy');
-		shootFF = game.add.audio('shootFF');	
+		shootFF = game.add.audio('shootFF');
+		fillStreet = game.add.audio('fillStreet');		
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -68,23 +69,22 @@ var playState = {
 		streetLampGroup = game.add.group();
 		streetLampGroup.enableBody = true; 
 
-
-
+		// indicators for player 
+		shopEntranceSignal = game.add.text(300, game.world.centerY, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+		shopEntranceSignal.alpha = 0;
+	    game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+		
+		fillInstruct = game.add.text(1650, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+		fillInstruct.alpha = 0;
+	    game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+		
+		portalEntranceSignal = game.add.text(game.world.centerX+850, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+		portalEntranceSignal.alpha = 0;
+	    game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+	    
 		if(townVisited < 1) {
 			this.spawnStreetLamp();
 			this.spawnFirefly(game.rnd.integerInRange(5,7));
-
-			shopEntranceSignal = game.add.text(300, game.world.centerY, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-			shopEntranceSignal.alpha = 0;
-	    	game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
-		
-			fillInstruct = game.add.text(1650, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-			fillInstruct.alpha = 0;
-	    	game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
-		
-			portalEntranceSignal = game.add.text(game.world.centerX+850, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-			portalEntranceSignal.alpha = 0;
-	    	game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 		} 
 		// if town streetlamp is already lit, keep it on
 		else if(townVisited >= 0 && townLampLit == true) {
@@ -149,16 +149,12 @@ var playState = {
 			player = new Player(game, 150, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		} else if( last == 'Shop') {
 			player = new Player(game, 290, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		}		
+		 else  {
+			player = new Player(game, 2150, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		}
-		else {
-			player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-		}
-		// } else {
+		// else {
 		// 	player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-
-	 //    	left == true
-	 //    	player.frame = 'playerSprite0004'; //not working
-
 		// }
 
 		game.add.existing(player);
@@ -171,10 +167,10 @@ var playState = {
 		timer = game.time.create();
 		timer.loop(10500, function() { 
 			//console.log('loop event at: ' + timer.ms);
-			console.log(game.rnd.integerInRange(1, 10));
-			if(game.rnd.integerInRange(1, 10)%3==0) 
-
-				this.spawnFirefly(game.rnd.integerInRange(0,2));
+			var spawn = game.rnd.integerInRange(1, 10);
+			console.log(spawn);
+			if(spawn%2==0) 
+				this.spawnFirefly(game.rnd.integerInRange(1,2));
 		}, this);
 		timer.start(); 
 
@@ -332,7 +328,7 @@ var playState = {
 
 		if(townLampFill == 5 && temp == true) { //temp
 			temp = false;
-			fillStreet = game.add.audio('fillStreet');
+			
 			fillStreet.play();
 
 			// light up the map when street lamp is lit
@@ -517,7 +513,7 @@ var playState = {
 	},
 	 render: function() {
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
-	 //	game.debug.body(this.civilian); 
+	 	//game.debug.body(this.civilian); 
 	 	//game.debug.body(this.spriteBoundsRight); 
 	 	game.debug.spriteInfo(player, 32, 32);
 	 }

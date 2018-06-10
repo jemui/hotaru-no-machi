@@ -1,5 +1,5 @@
-// Player prefab constructor function
-function Player(game, x, y, key, fr, scale, rotation) {
+// Civlian prefab constructor function
+function Civlian(game, x, y, key, fr, scale, rotation) {
 	// call to Phaser.Sprite // new Sprite(game, x, y, key, frame)
 	Phaser.Sprite.call(this, game, x, y, key, fr);
 
@@ -8,19 +8,20 @@ function Player(game, x, y, key, fr, scale, rotation) {
 	// put some physics on it
 	this.enableBody = true;
 	game.physics.enable(this);
+	this.body.setSize(80,200,45,0);
 	
 	//add walking animation
-	this.animations.add('left', ['playerSprite0005','playerSprite0006'], 30, true);
-	this.animations.add('right', ['playerSprite0002','playerSprite0003'], 30, true);
+	this.animations.add('left', ['CivlianSprite0005','CivlianSprite0006'], 30, true);
+	this.animations.add('right', ['CivlianSprite0002','CivlianSprite0003'], 30, true);
 	
 }
-// explicitly define prefab's prototype (Phaser.Sprite) and constructor (Player)
-Player.prototype = Object.create(Phaser.Sprite.prototype);
-Player.prototype.constructor = Player;
+// explicitly define prefab's prototype (Phaser.Sprite) and constructor (Civlian)
+Civlian.prototype = Object.create(Phaser.Sprite.prototype);
+Civlian.prototype.constructor = Civlian;
 
 // override Phaser.Sprite update 
-Player.prototype.update = function() {
-	// Arrow keys to move player
+Civlian.prototype.update = function() {
+	// Arrow keys to move Civlian
 	if (cursors.left.isDown) {
 		this.animations.play('left', 10, false);
 		this.body.velocity.x = -500;	// Move to the left
@@ -36,9 +37,9 @@ Player.prototype.update = function() {
 		// stand still 
 		this.animations.stop();
 		if(left == true)
-			this.frame = 'playerSprite0004';
+			this.frame = 'CivlianSprite0004';
 		else 
-			this.frame = 'playerSprite0001';
+			this.frame = 'CivlianSprite0001';
 		this.body.velocity.x = 0;
 	}
 	if (cursors.up.isDown) {

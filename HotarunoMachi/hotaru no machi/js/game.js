@@ -10,5 +10,6 @@ game.state.add('play', playState);
 game.state.add('town', townState);
 game.state.add('townLeft', townLeftState);
 game.state.add('end', endState);
+game.state.add('win', winState);
 
 game.state.start('boot');

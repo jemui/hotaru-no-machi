@@ -30,6 +30,7 @@ var townLeftState = {
 		hitEnemy = game.add.audio('hitEnemy');
 		shootFF = game.add.audio('shootFF');	
 		playerDies = game.add.audio('playerDies');
+		fillStreet = game.add.audio('fillStreet');
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -71,15 +72,12 @@ var townLeftState = {
 		if(purifiedLeft == false) {
 			this.toxicPuddle = puddle.create(700, 550, 'fAssets', 'doublePuddle');
 			this.toxicPuddle.body.immovable = true;
+			this.toxicPuddle.body.setSize(100, 53, 50, 0);
 
 			this.puddleHitBox = hitBox.create(this.toxicPuddle.x-250, this.toxicPuddle.y,'puddleHitBox');
 			this.puddleHitBox.scale.setTo(2.5,1);
 			this.puddleHitBox.body.immovable = true;
-
-			//setsize
 		}
-
-		//	this.puddleHitBox.enableBody = true;
 
 		// Add street lamp.
 		streetLampGroup = game.add.group();
@@ -89,9 +87,6 @@ var townLeftState = {
 			this.spawnStreetLamp(1720);
 			this.spawnFirefly(game.rnd.integerInRange(3,8));
 
-			// shopEntranceSignal = game.add.text(1440, game.world.centerY-210, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-			// shopEntranceSignal.alpha = 0;
-	  //   	game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 			portalEntranceSignal = game.add.text(270, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			portalEntranceSignal.alpha = 0;
 	    	game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
@@ -151,9 +146,11 @@ var townLeftState = {
 		player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0004', 150, game.world.height-175);
 		game.add.existing(player);
 
+
+		// this.spawnCivilian(800, game.world.centerY+50, 1);
+		// game.add.tween(this.civilian).to( { x:this.toxicPuddle.x }, 4000, Phaser.Easing.Linear.None, true);		
+
 		// visibility. Only GUI related elements should go after this
-	//	this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
-		//this.visionVisibility.fixedToCamera = true;
 
 		// Lighting
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
@@ -314,14 +311,13 @@ var townLeftState = {
 
 		if(townLeftLampFill == 5 && temp == true) { //temp
 			temp = false;
-			fillStreet = game.add.audio('fillStreet');
+
 			fillStreet.play();
 
 			// light up the map when street lamp is lit
 			this.light(750, game.world.centerY-200);
 
 			litStreetLamps++;
-
 
 			if (litStreetLamps == 1)
 				this.visionVisibility.animations.play('first', 5, false);
@@ -357,7 +353,14 @@ var townLeftState = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
 			game.state.start('play');
 	},
-	
+	rottenApple: function(civilian, toxicPuddle) {
+		// var civX = civilian.x;
+		// var civY = civilian.y; 
+		civilian.kill(); 
+
+		// this.spawnEnemy(toxicPuddle.x, toxicPuddle.y, 1);
+		// need to spawn enemy in place (don't cann function )
+	},
 	update: function() {
 	   // Read input from keyboard to move the player
 	    cursors = game.input.keyboard.createCursorKeys();
@@ -396,10 +399,13 @@ var townLeftState = {
 	    game.physics.arcade.collide(player, bounds);
 
   		// collision detection between player and enemies
-	    game.physics.arcade.overlap(player, enemies, this.health, null, this);
+	    game.physics.arcade.overlap(player, enemies, health, null, this);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
 
 		game.physics.arcade.collide(player, puddle, health, null, this); 
+
+		// collision detection for civilians becoming rotten apples 
+  		game.physics.arcade.overlap(this.civilian, this.toxicPuddle, this.rottenApple);
 
 		// ----------------------------------------------------------------------
 
@@ -414,8 +420,8 @@ var townLeftState = {
 		// ----------------------------------------------------------------------
 
 	    // Reset the players velocity (movement)
-	    player.body.velocity.x = 0;
-	    player.body.velocity.y = 0;
+	    // player.body.velocity.x = 0;
+	    // player.body.velocity.y = 0;
 
 	    if(leftEnemyAlive == true) {
 	    	if(this.enemy.x == 50)
@@ -514,7 +520,8 @@ var townLeftState = {
 	},
 	 render: function() {
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
-	 	//game.debug.body(this.enemy); 
+	 	// game.debug.body(this.toxicPuddle); 
+	 	//game.debug.body(player); 
 	 	//game.debug.body(this.spriteBoundsRight); 
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
 	 }

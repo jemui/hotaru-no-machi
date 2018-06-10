@@ -74,8 +74,18 @@ var endState = {
 		healthJuice = 0;
 		proteinShake = 0;
 		purifiedLeft = false; 
+		town2LampFill = 0;  
+		town2Visited = 0;
+		town2LampLit = false; 
+		townLeftLampFill = 0;  
+		townLeftVisited = 0;
+		townLeftLampLit = false; 
+		purifiedLeft = false; 
+		leftEnemyAlive = true;
 
-		playerDies.stop();
+		//stop playing audio
+		game.sound.stopAll();
+		
 		//go back to the title screen
 		game.state.start('title'); 
 	},

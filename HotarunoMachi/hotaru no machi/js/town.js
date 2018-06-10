@@ -1,6 +1,7 @@
 var town2LampFill = 0;  
 var town2Visited = 0;
 var town2LampLit = false; 
+var yCenter = 350;
 // 30-32 gradient images to use. array of 4 street lamps. stores litStreetLamps 
 // create animations in the states. animation played depends on # lit lamps and position in array
 
@@ -10,6 +11,9 @@ var townState = {
 
 		this.background = game.add.sprite(0, -64, 'fAssets', 'townBackground');
 		this.background = game.add.sprite(1200, -64, 'fAssets', 'townBackground');
+
+		this.background = game.add.sprite(0, 636, 'fAssets', 'townBackground');
+		this.background = game.add.sprite(1200, 636, 'fAssets', 'townBackground');		
 
 		if(litStreetLamps == totalLamps) {
 			this.background = game.add.sprite(0, -64, 'endGame', 'townBackgroundEnd');
@@ -28,6 +32,7 @@ var townState = {
 		hitEnemy = game.add.audio('hitEnemy');
 		shootFF = game.add.audio('shootFF');	
 		playerDies = game.add.audio('playerDies');
+		fillStreet = game.add.audio('fillStreet');
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -47,15 +52,16 @@ var townState = {
 		this.bound.fixedToCamera = true;
 
 		// Top Bound
-		this.boundTop = bounds.create(0, game.world.centerY-115, 'bound');
+		this.boundTop = bounds.create(0, yCenter-115, 'bound');
 		this.boundTop.body.immovable = true; 
 		this.boundTop.fixedToCamera = true;
 
-		this.leftBound = bounds.create(-100, game.world.centerY+100, 'spriteBounds'); 
+		this.leftBound = bounds.create(-100, yCenter+100, 'spriteBounds'); 
 		this.leftBound.body.immovable = true;
 
-		this.rightBound = bounds.create(2400, game.world.centerY+100, 'spriteBounds'); 
+		this.rightBound = bounds.create(2400, yCenter+100, 'spriteBounds'); 
 		this.rightBound.body.immovable = true;
+
 
 		// Add street lamp.
 		streetLampGroup = game.add.group();
@@ -65,14 +71,14 @@ var townState = {
 			this.spawnStreetLamp(1720);
 			this.spawnFirefly(game.rnd.integerInRange(3,8));
 
-			// shopEntranceSignal = game.add.text(1440, game.world.centerY-210, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			// shopEntranceSignal = game.add.text(1440, yCenter-210, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			// shopEntranceSignal.alpha = 0;
 	  //   	game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
-			portalEntranceSignal = game.add.text(270, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			portalEntranceSignal = game.add.text(270, yCenter-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			portalEntranceSignal.alpha = 0;
 	    	game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 
-			fillInstruct = game.add.text(1720, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+			fillInstruct = game.add.text(1720, yCenter-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 			fillInstruct.alpha = 0;
 	    	game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
 		
@@ -94,9 +100,9 @@ var townState = {
 		civ = game.add.group();
 		civ.enableBody = true;
 
-		this.spawnCivilian(1000, game.world.centerY,1);
+		this.spawnCivilian(1000, yCenter,1);
 
-		this.civDialogue = ['Rumor has it that only two people at the accident site survived.'];
+		this.civDialogue = ['Rumor has it that only two people at the accident site survived.', 'The town hasn’t been the same ever since that meltdown incident.'];
 
 		// speech bubble
 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
@@ -113,13 +119,27 @@ var townState = {
 
 		portal = game.add.group();
 		portal.enableBody = true;
-		this.portalToTown = portal.create(270, game.world.centerY-30, 'fAssets', 'portal');
+		this.portalToTown = portal.create(270, yCenter-30, 'fAssets', 'portal');
 
-//		this.portalToTown2 = portal.create(game.world.centerX+1000, game.world.centerY, 'light');
+		this.portalToTownBelow = portal.create(game.world.centerX+850, yCenter-30, 'fAssets', 'portal');
+		game.add.tween(this.portalToTownBelow).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
+
+		// Firefly Respawner
+		// set up looping event (delay, callback, context, arguments)
+		timer = game.time.create();
+		timer.loop(10500, function() { 
+			//console.log('loop event at: ' + timer.ms);
+			var spawn = game.rnd.integerInRange(1, 10);
+			console.log(spawn);
+			if(spawn%2==0) 
+				this.spawnFirefly(game.rnd.integerInRange(1,2));
+		}, this);
+		timer.start(); 
+//		this.portalToTown2 = portal.create(game.world.centerX+1000, yCenter, 'light');
 
 		//PlayerSprite
 		if (last == 'Town') {
-			player = new Player(game, 380, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+			player = new Player(game, 380, 525, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		} 
 		else {
 			player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
@@ -201,9 +221,9 @@ var townState = {
 	}, 
 	spawnEnemy: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.enemy = enemies.create(0, game.world.centerY+55, 'fAssets', 'enemySprite0001');
+			this.enemy = enemies.create(0, yCenter+55, 'fAssets', 'enemySprite0001');
 
-			//this.enemy = enemies.create(game.rnd.integerInRange(100,600), game.world.centerY+55, 'fAssets', 'enemySprite0001');
+			//this.enemy = enemies.create(game.rnd.integerInRange(100,600), yCenter+55, 'fAssets', 'enemySprite0001');
 			//this.enemy.scale.x *= -1;
 			this.enemy.animations.add('right',['enemySprite0002', 'enemySprite0003'], 5, true);
 			this.enemy.animations.add('left',['enemySprite0005', 'enemySprite0006'], 5, true);
@@ -218,7 +238,7 @@ var townState = {
 		this.streetLamp.animations.play('light');
 	},
 	spawnStreetLamp: function(x) {
-		this.streetLamp = streetLampGroup.create(x, game.world.centerY-150, 'fAssets', 'streetLampDark');
+		this.streetLamp = streetLampGroup.create(x, yCenter-150, 'fAssets', 'streetLampDark');
 		//this.streetLamp.scale *= -1;
 		//this.streetLamp.contain = 0; 
 		//this.streetLamp.n? + counter
@@ -233,9 +253,9 @@ var townState = {
 
 	spawnFirefly: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'singleFirefly');
+			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(yCenter,game.height-128), 'fAssets', 'singleFirefly');
 			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(0,game.world.centerX+400) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX+400), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
-			game.add.tween(this.firefly).to( { y: game.world.centerY+95 }, 1500, Phaser.Easing.Linear.None, true, game.world.centerY-75, 1500, Phaser.Easing.Linear.None, true);
+			game.add.tween(this.firefly).to( { y: yCenter+95 }, 1500, Phaser.Easing.Linear.None, true, yCenter-75, 1500, Phaser.Easing.Linear.None, true);
 		}
 	},
 
@@ -312,11 +332,11 @@ var townState = {
 
 		if(town2LampFill == 5 && temp == true) { //temp
 			temp = false;
-			fillStreet = game.add.audio('fillStreet');
+			
 			fillStreet.play();
 
 			// light up the map when street lamp is lit
-			this.light(750, game.world.centerY-200);
+			this.light(750, yCenter-200);
 
 			litStreetLamps++;
 
@@ -342,6 +362,12 @@ var townState = {
 	town: function() {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
 			game.state.start('play');
+	},
+	townBelow: function() {
+		if(game.input.keyboard.justPressed(Phaser.Keyboard.W)) {
+			game.world.setBounds(0, 700, 2400, 700); // change the world bounds to fit the bottom part of the town map
+			player.y = 1200; 
+		}
 	},
 	
 	update: function() {
@@ -375,6 +401,7 @@ var townState = {
 
   		// collision detection for portals
   		game.physics.arcade.overlap(player, this.portalToTown, this.town);
+   		game.physics.arcade.overlap(player, this.portalToTownBelow, this.townBelow);
 
   		// collision detection for player 
   		game.physics.arcade.overlap(player, this.streetLamp, this.fillStreetLamp, null, this);
@@ -402,12 +429,6 @@ var townState = {
 	    player.body.velocity.x = 0;
 	    player.body.velocity.y = 0;
 
-	    // Move back to tut by going left 
-	    if(player.x < -player.width) {
-	    	game.state.start('tutorial', true, false);
-	    	faceRight = true;
-	    	//music.stop();
-	    }
 
   		// if( this.enemy.x ==1200)
 	   //  	this.enemy.animations.play('left');
