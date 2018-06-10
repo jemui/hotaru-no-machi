@@ -12,12 +12,6 @@ var tutorialState = {
 	create: function() {
 		var background = game.add.sprite(0,-165, 'fAssets', 'breakfastBar');
 
-		 message = game.add.group(); 
-		 message.enableBody = true; 
-
-		 this.envelope = message.create(-100, -100, 'endGame', 'envelope');
-		// this.envelope.visible = false;
-
 		if(litStreetLamps == totalLamps) {
 			var background = game.add.sprite(0,-165, 'endGame', 'breakfastBarEnd');
 		}
@@ -27,6 +21,13 @@ var tutorialState = {
 		depositFF = game.add.audio('depositFF');
 
 		game.world.setBounds(0,0,1200,700);
+
+		//create envelope for win state
+		message = game.add.group(); 
+		message.enableBody = true; 
+		this.envelope = message.create(-100, -100, 'endGame', 'envelope');
+		this.interact = game.add.text(this.envelope.x, this.envelope.y-750, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#FFFFFF'});
+		//this.interact.visible = false;
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -93,17 +94,18 @@ var tutorialState = {
     	
     	} else {
     		//this.envelope = game.add.sprite(game.world.centerX, game.world.centerY-95, 'endGame', 'envelope');
-    		this.envelope = game.add.sprite(game.world.centerX, game.world.centerY+90, 'endGame', 'envelope');
+    		//this.envelope = game.add.sprite(game.world.centerX, game.world.centerY+80, 'endGame', 'envelope');
+    		this.envelope.x = game.world.centerX+100;
+    		this.envelope.y = game.world.centerY+80;
+
     		this.envelope.enableBody = true;
     		this.envelope.immovable = true;
     		//this.envelope.body.setSize(146, 500, 0,0);
 
-			this.interact = game.add.text(this.envelope.x, this.envelope.y-50, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#FFFFFF'});
+			this.interact.x = this.envelope.x-100;
+			this.interact.y = this.envelope.y-50;
+			//this.interact.visible = true;
 	    	game.add.tween(this.interact).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
-
-
-    		// player = new Player(game, 150, game.world.centerY+80, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-			// game.add.existing(player);
     	}
 
     	timesVisited++;
@@ -194,13 +196,21 @@ var tutorialState = {
 		statusBar();	// update inventory
 	},
 	readEnvelope: function() {
+		if (game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
+			// fade to win state
+			var fade = game.add.sprite(0,0, 'fade', 'fade_000000');
+			fade.animations.add('fadeToBlack', ['fade_000001', 'fade_000002', 'fade_00003', 'fade_000004', 'fade_000005', 'fade_000006', 'fade_000008', 'fade_000009', 'fade_000010', 'fade_000011', 'fade_000012'
+								, 'fade_000013', 'fade_000014', 'fade_000015', 'fade_000016', 'fade_000017', 'fade_000018', 'fade_000019', 'fade_000020', 'fade_000021'], 12, false);
+			fade.play('fadeToBlack');
 
-		// fade to win state
-		var fade = game.add.sprite(0,0, 'fade', 'fade_000000');
-		fade.animations.add('fadeToBlack', ['fade_000001', 'fade_000002', 'fade_00003', 'fade_000004', 'fade_000005', 'fade_000006', 'fade_000008', 'fade_000009', 'fade_000010', 'fade_000011', 'fade_000012'
-							, 'fade_000013', 'fade_000014', 'fade_000015', 'fade_000016', 'fade_000017', 'fade_000018', 'fade_000019', 'fade_000020', 'fade_000021'], 12, false);
-		fade.play('fadeToBlack');
+			timer = game.time.create();
+			timer.loop(3000, function() { 
+				music.stop();
+				game.state.start('win');
+		}, this);
+		timer.start(); 
 
+		}
 	},
 	update: function() {
 	   // Read input from keyboard to move the player
@@ -246,10 +256,12 @@ var tutorialState = {
 	    // insert message here
 	    if(win == true) {;
 	    	if(game.physics.arcade.overlap(player, this.envelope) && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
-				shopMessage = game.add.text(player.x+50, player.y-100, 'To Be Implemented Soon!',{font: '25px Advent Pro', fill: '#E5D6CE'});
-				game.add.tween(shopMessage).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
-				game.add.tween(shopMessage).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
-	    		console.log('To Be Implemented Soon!');
+	    		this.readEnvelope();
+
+				//shopMessage = game.add.text(player.x+50, player.y-100, 'To Be Implemented Soon!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+				//game.add.tween(shopMessage).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
+				//game.add.tween(shopMessage).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
+	    		//console.log('To Be Implemented Soon!');
 	    	}
 	    }
 
@@ -361,7 +373,7 @@ var tutorialState = {
 	},
 	 render: function() {
 	 	// if(win == true) {
-	 	// 	game.debug.body(this.envelope); 
+	 	 	// game.debug.body(this.envelope); 
 	 	// }
 	// 	game.debug.spriteInfo(this.player, 32, 32);
 	 }

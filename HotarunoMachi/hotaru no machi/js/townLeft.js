@@ -104,8 +104,7 @@ var townLeftState = {
 			this.spawnFirefly(game.rnd.integerInRange(5,7));
 		}
 
-		townLeftVisited++;
-		last = 'townLeft';
+
 
 		// Enemy group 
 		enemies = game.add.group();
@@ -152,7 +151,15 @@ var townLeftState = {
 		timer.start(); 
 
 		//Player
-		player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0004', 150, game.world.height-175);
+		//PlayerSprite
+
+		if (last == 'Town') {
+			player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		} else {
+		 	player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		}
+
+		//player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0004', 150, game.world.height-175);
 		game.add.existing(player);
 
 
@@ -198,7 +205,9 @@ var townLeftState = {
 		pauseButton.scale.setTo(0.5);
 		pauseButton.onInputOver.add(this.over, this.pauseButton);
 		pauseButton.onInputOut.add(this.out, this.pauseButton);
-
+		
+		townLeftVisited++;
+		last = 'townLeft';
 		//console.log(game.width);
 		game.camera.follow(player);	// Game camera follows player.
 	},
@@ -258,7 +267,7 @@ var townLeftState = {
 
 	spawnFirefly: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'singleFirefly');
+			this.firefly = object.create(game.rnd.integerInRange(50,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'singleFirefly');
 			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(0,game.world.centerX+400) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX+400), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
 			game.add.tween(this.firefly).to( { y: game.world.centerY+95 }, 1500, Phaser.Easing.Linear.None, true, game.world.centerY-75, 1500, Phaser.Easing.Linear.None, true);
 		}
@@ -514,7 +523,7 @@ var townLeftState = {
 	 render: function() {
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
 	 	// game.debug.body(this.toxicPuddle); 
-	 	//game.debug.body(player); 
+	 	game.debug.body(player); 
 	 	//game.debug.body(this.spriteBoundsRight); 
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
 	 }

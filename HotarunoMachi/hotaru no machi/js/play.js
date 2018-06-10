@@ -25,7 +25,7 @@ var playState = {
 			this.background = game.add.sprite(2400, -25, 'endGame', 'townBackgroundEnd');
 			this.background.scale.x *= -1;
 
-			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(bright).to( { y: player.y-150 }, 5500, Phaser.Easing.Linear.None, true);
 			game.add.tween(bright).to( { alpha: 0 }, 5500, Phaser.Easing.Linear.None, true);
 		}
@@ -82,7 +82,7 @@ var playState = {
 		fillInstruct = game.add.text(1750, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 	    game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);
 		
-		portalEntranceSignal = game.add.text(game.world.centerX+850, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+		portalEntranceSignal = game.add.text(game.world.centerX+1150, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
 	    game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);
 
 		if(townVisited < 1) {
@@ -139,7 +139,7 @@ var playState = {
 		this.speechArrow.visible = false; 
 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
 
-		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '25px Advent Pro', fill: '#000000'});
+		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '38px Advent Pro', fill: '#000000'});
 		game.add.tween(this.next).to( { alpha: 0.5 }, 500, Phaser.Easing.Linear.None, true, {alpha: 1}, 500, Phaser.Easing.Linear.None, true);
 		this.next.visible = false;
 
@@ -150,12 +150,12 @@ var playState = {
 		else if(last == 'Shop') {
 			player = new Player(game, 290, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		}		
-		 else  {
-			player = new Player(game, 2150, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		 else if(last == 'Town2') {
+			player = new Player(game, 2000, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		}
-		// else {
-		// 	player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-		// }
+		else {
+		 	player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		}
 
 		game.add.existing(player);
 
@@ -166,10 +166,9 @@ var playState = {
 		// set up looping event (delay, callback, context, arguments)
 		timer = game.time.create();
 		timer.loop(10500, function() { 
-			//console.log('loop event at: ' + timer.ms);
 			var spawn = game.rnd.integerInRange(1, 10);
 			if(spawn%2==0) 
-				this.spawnFirefly(game.rnd.integerInRange(1,2));
+				this.spawnFirefly(game.rnd.integerInRange(1,3));
 		}, this);
 		timer.start(); 
 
@@ -200,7 +199,6 @@ var playState = {
 		else if(litStreetLamps > 6)
 			this.visionVisibility.animations.play('seventh', 5, false);
 
-
 		// Add the status bar to the bottom
 		statusBar();
 
@@ -219,13 +217,10 @@ var playState = {
 
 			this.civilian.animations.add('right',['civilianSprite0002', 'civilianSprite0003'], 5, true);
 			this.civilian.animations.add('left',['civilianSprite0005', 'civilianSprite0006'], 5, true);
-		//console.log(this.enemy.body.velocity.x);
-			//game.add.tween(this.civilian).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
-
 
 			this.civilian.scale.x *= -1;
 			civText = game.add.text(x-300, y-55, '<Press Space to Interact with Me!>',{font: '38px Advent Pro', fill: '#E5D6CE'});
-		//	game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+	
 			game.add.tween(civText).to( { alpha: 0.5 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
 		}
@@ -265,8 +260,8 @@ var playState = {
 
 	spawnFirefly: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'singleFirefly');
-			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(0,game.world.centerX+400) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX+400), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
+			this.firefly = object.create(game.rnd.integerInRange(50,game.width-64), game.rnd.integerInRange(game.world.centerY,game.height-128), 'fAssets', 'singleFirefly');
+			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(game.world.centerX, game.world.centerX+800) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
 			game.add.tween(this.firefly).to( { y: game.world.centerY+95 }, 1500, Phaser.Easing.Linear.None, true, game.world.centerY-75, 1500, Phaser.Easing.Linear.None, true);
 		}
 	},
@@ -293,7 +288,7 @@ var playState = {
 		if(fireflies == 5) {
 			full = true;
 
-			fillText = game.add.text(player.x-150, player.y-150, 'Your lantern is now full. Try storing fireflies in street lamps!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			fillText = game.add.text(player.x-150, player.y-150, 'Your lantern is now full. Try storing fireflies in street lamps!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fillText).to( { y: player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 3500, Phaser.Easing.Linear.None, true);
 
@@ -313,14 +308,14 @@ var playState = {
 
 			full = false;
 
-			fillText = game.add.text(player.x+50, player.y-100, 'StreetLamp contains ' + townLampFill + '/5 fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			fillText = game.add.text(player.x+50, player.y-100, 'StreetLamp contains ' + townLampFill + '/5 fireflies.',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fillText).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
 			var temp = true;
 		} 
 		else if(fireflies == 0 && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
-			noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(noFirefliesLeft).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(noFirefliesLeft).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 		}
@@ -352,7 +347,7 @@ var playState = {
 				this.visionVisibility.animations.play('seventh', 5, false);
 
 
-			filledText = game.add.text(player.x+50, player.y-50, 'This street lamp is now filled!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			filledText = game.add.text(player.x+50, player.y-50, 'This street lamp is now filled!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(filledText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
@@ -466,7 +461,9 @@ var playState = {
 
 				// update fireflies
 				if(playerFF == 0) {
-					console.log('You ran out of fireflies. Try collecting more!'); 
+					var noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '38px Advent Pro', fill: '#E5D6CE'});
+					game.add.tween(noFirefliesLeft).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
+					game.add.tween(noFirefliesLeft).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 					playerFF--;
 				}
 
@@ -479,7 +476,10 @@ var playState = {
 				// update fireflies
 				
 				if(playerFF == 0) {
-					console.log('You ran out of fireflies. Try collecting more!'); 
+					var noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '38px Advent Pro', fill: '#E5D6CE'});
+					game.add.tween(noFirefliesLeft).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
+					game.add.tween(noFirefliesLeft).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
+				
 					playerFF--;
 				}
 				statusBar();	// update inventory

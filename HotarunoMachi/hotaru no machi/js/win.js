@@ -27,7 +27,7 @@ var winState = {
 	                lettersPerSec: 50, // letters per second
 	            },
 	            {        
-	                text: "Testing sample text... this is a very very very very fast one.   [Enter]", // the text you want to play
+	                text: "Both of us give you our sincere thanks for bringing light back to the town...", // the text you want to play
 	                lettersPerSec: 50, // letters per second
 	            }
 	        ],
@@ -36,6 +36,12 @@ var winState = {
 				fade.animations.add('fadeToBlack', ['fade_000001', 'fade_000002', 'fade_00003', 'fade_000004', 'fade_000005', 'fade_000006', 'fade_000008', 'fade_000009', 'fade_000010', 'fade_000011', 'fade_000012'
 								, 'fade_000013', 'fade_000014', 'fade_000015', 'fade_000016', 'fade_000017', 'fade_000018', 'fade_000019', 'fade_000020', 'fade_000021'], 12, false);
 				fade.play('fadeToBlack');
+				timer = game.time.create();
+				timer.loop(3000, function() { 
+					music.stop();
+					game.state.start('title');
+			}, this);
+			timer.start(); 
 	        }
 	        // fade out when text is over 
 

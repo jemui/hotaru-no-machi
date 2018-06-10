@@ -127,7 +127,7 @@ var townState = {
 
 		this.spawnCivilian(1000, yCenter,1);
 
-		this.civDialogue = ['Rumor has it that only two people at the accident site survived.', 'The town hasn’t been the same ever since that meltdown incident.'];
+		this.civDialogue = ['Sometimes fireflies respawn.','Rumor has it that only two people at the accident site survived.', 'The town hasn’t been the same ever since that meltdown incident.'];
 
 		// speech bubble
 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
@@ -266,8 +266,8 @@ var townState = {
 
 	spawnFirefly: function(n) {
 		for(var i = 0; i < n; i++ ){
-			this.firefly = object.create(game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(yCenter,game.height-128), 'fAssets', 'singleFirefly');
-			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(0,game.world.centerX+400) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX+400), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
+			this.firefly = object.create(game.rnd.integerInRange(50,game.width-64), game.rnd.integerInRange(yCenter,game.height-128), 'fAssets', 'singleFirefly');
+			game.add.tween(this.firefly).to( { x: game.rnd.integerInRange(game.world.centerX, game.world.centerX+800) }, game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(0,game.world.centerX), game.rnd.integerInRange(2000,10000), Phaser.Easing.Linear.None, true);
 			game.add.tween(this.firefly).to( { y: yCenter+95 }, 1500, Phaser.Easing.Linear.None, true, yCenter-75, 1500, Phaser.Easing.Linear.None, true);
 		}
 	},
