@@ -58,30 +58,31 @@ var endState = {
 	// start button action
 	actionOnClick: function() {
 		//reset game variables
-		lives = 5;
-		playerFF = 0;
-		fireflies = 0;
-		timesVisited = 0;
-		townVisited = 0;
-		townLampLit = false;
-		townLampFill = 0;
-		litStreetLamps = 0;
-		tutSpawned = false;
-		current = 0;
-		full = false; 
-		lanternSize = 5;
-	 	purificationMilk = 0;
-		healthJuice = 0;
-		proteinShake = 0;
-		purifiedLeft = false; 
-		town2LampFill = 0;  
-		town2Visited = 0;
-		town2LampLit = false; 
-		townLeftLampFill = 0;  
-		townLeftVisited = 0;
-		townLeftLampLit = false; 
-		purifiedLeft = false; 
-		leftEnemyAlive = true;
+		resetVar();
+		// lives = 5;
+		// playerFF = 0;
+		// fireflies = 0;
+		// timesVisited = 0;
+		// townVisited = 0;
+		// townLampLit = false;
+		// townLampFill = 0;
+		// litStreetLamps = 0;
+		// tutSpawned = false;
+		// current = 0;
+		// full = false; 
+		// lanternSize = 5;
+	 // 	purificationMilk = 0;
+		// healthJuice = 0;
+		// proteinShake = 0;
+		// purifiedLeft = false; 
+		// town2LampFill = 0;  
+		// town2Visited = 0;
+		// town2LampLit = false; 
+		// townLeftLampFill = 0;  
+		// townLeftVisited = 0;
+		// townLeftLampLit = false; 
+		// purifiedLeft = false; 
+		// leftEnemyAlive = true;
 
 		//stop playing audio
 		game.sound.stopAll();

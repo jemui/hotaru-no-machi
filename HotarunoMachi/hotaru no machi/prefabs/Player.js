@@ -21,6 +21,10 @@ Player.prototype.constructor = Player;
 
 // override Phaser.Sprite update 
 Player.prototype.update = function() {
+	// reset the player's velocity
+	player.body.velocity.x = 0;
+	player.body.velocity.y = 0;
+
 	// Arrow keys to move player
 	if (cursors.left.isDown) {
 		this.animations.play('left', 10, false);
@@ -48,5 +52,5 @@ Player.prototype.update = function() {
 	if (cursors.down.isDown) {
 		this.body.velocity.y = 500; // Move down
 	}
-	
+
 }

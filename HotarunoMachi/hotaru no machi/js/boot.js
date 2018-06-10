@@ -2,68 +2,7 @@ var bootState = {
 	create: function() {
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //---------------- Start dat.gui code ----------------
-
-    //This object defines all the default values we can change with dat.gui
-    //make sure it's either global (defined outside of all functions)
-    //or it's added as a property of the game. (this.game.settings = settings;)
-	    settings = {
-
-	      // Debug controls
-	      debugCollisionLayer: false,
-	      debugPlayerBody: false,
-	      debugPlayerBodyInfo: false,
-	      debugCameraInfo: false,
-	      debugFps: false,
-	      musicOn: true,
-	      sfxOn: true,
-
-	      // Player properties
-	      maxVelocity: 700,
-	      moveSpeed: 150,
-	      jumpSpeed: 375,
-	      gravity: 1000
-
-	    };
-
-	    //Give a reference to the gui to the game.
-	    this.game.gui = new dat.GUI({
-	      width: 350
-	    });
-
-	    //This allows us to save (and remember) our settings.
-	    this.game.gui.useLocalStorage = true;
-	    this.game.gui.remember(settings);
-
-	    //stepSize lets us choose the precision level of our gui
-	    var stepSize = 1;
-
-		// Player
-	    this.game.gui.playerFolder = this.game.gui.addFolder('Player');
-	    this.game.gui.playerFolder.add(settings, 'moveSpeed').min(0).max(1000).step(stepSize).name('Move Speed');
-	    this.game.gui.playerFolder.add(settings, 'jumpSpeed').min(0).max(2000).step(stepSize).name('Jump Speed');
-	    this.game.gui.playerFolder.add(settings, 'maxVelocity').min(0).max(1000).step(stepSize).name('Max Velocity');
-	    this.game.gui.playerFolder.add(settings, 'gravity').min(0).max(5000).step(stepSize).name('Gravity');
-
-	    //Debug
-	    this.game.gui.debugFolder = this.game.gui.addFolder('Debug');
-	    this.game.gui.debugFolder.add(settings, 'debugFps').name('FPS');
-	    this.game.gui.debugFolder.add(settings, 'debugCollisionLayer').name('Collision Layer');
-	    this.game.gui.debugFolder.add(settings, 'debugPlayerBody').name('Player Body');
-	    this.game.gui.debugFolder.add(settings, 'debugPlayerBodyInfo').name('Player Body Info');
-	    this.game.gui.debugFolder.add(settings, 'debugCameraInfo').name('Camera Info');
-	    this.game.gui.debugFolder.add(settings, 'musicOn').name('Music On');
-	    this.game.gui.debugFolder.add(settings, 'sfxOn').name('SFX On')
-
-	    //---------------- end dat.gui code ----------------
-
-	    //make pixel art not look shitty!
-	    //this.game.renderer.renderSession.roundPixels = true;
-	    //Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
-	    //partially fix shaky sprites
-	    //this.game.camera.roundPx = false;
-
-	    //MAGIC SCALING CODE 
+	    //MAGIC SCALING CODE from dat.gui
 	    this.game.scale.pageAlignVertically = true;
 	    this.game.scale.pageAlignHorizontally = true;
 	    this.windowHeight = window.innerHeight;
@@ -136,18 +75,11 @@ function resumeOnClick(){
 
 function titleOnClick(){
 	game.paused ? game.paused = false : game.paused = true;
-//	pauseGame();
 	game.state.start('title');
 
 	//reset all variables
 	music.stop();
-    current = 0;   // current dialogue
-    fireflies = 0;  // number of fireflies the player has
-    playerFF = 0; // for console.log
-    faceRight = true;
-    full = false; 
-    tutSpawned = false; // tutorial spawned firefly
-    timesVisited = 0;
+	resetVar();
 
 }
 
@@ -159,35 +91,38 @@ function out(button) {
     button.frame = 0;
 }
 
-// Game functions shared by all states 
-function lighting() {
-	this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000000');
-	this.visionVisibility.fixedToCamera = true;
+function resetVar() {
+	lives = 5;
+	playerFF = 0;
+	fireflies = 0;
+	timesVisited = 0;
+	townVisited = 0;
+	townLampLit = false;
+	townLampFill = 0;
+	litStreetLamps = 0;
+	tutSpawned = false;
+	current = 0;
+	full = false; 
 
-	this.visionVisibility.animations.add('first', ['gradient_000001', 'gradient_000002', 'gradient_000003', 'gradient_000004'], 30, true);
-	this.visionVisibility.animations.add('second', ['gradient_000005', 'gradient_000006', 'gradient_000007', 'gradient_000008'], 30, true);
-	this.visionVisibility.animations.add('third', ['gradient_000009', 'gradient_000010', 'gradient_000011', 'gradient_000012'], 30, true);
-	this.visionVisibility.animations.add('fourth', ['gradient_000013', 'gradient_000014', 'gradient_000015', 'gradient_000016'], 30, true);
-	this.visionVisibility.animations.add('fifth', ['gradient_000017', 'gradient_000018', 'gradient_000019', 'gradient_000020'], 30, true);
-	this.visionVisibility.animations.add('sixth', ['gradient_000021', 'gradient_000022', 'gradient_000023', 'gradient_000024'], 30, true);
-	this.visionVisibility.animations.add('seventh', ['gradient_000025', 'gradient_000026', 'gradient_000027', 'gradient_000028'], 30, true);
+	lanternSize = 5;
+	purificationMilk = 0;
+	healthJuice = 0;
+	proteinShake = 0;
 
-	if (litStreetLamps == 1)
-		this.visionVisibility.animations.play('first', 5, false);
-	else if(litStreetLamps == 2)
-		this.visionVisibility.animations.play('second', 5, false);
-	else if(litStreetLamps == 3)
-		this.visionVisibility.animations.play('third', 5, false);
-	else if(litStreetLamps == 4)
-		this.visionVisibility.animations.play('fourth', 5, false);
-	else if(litStreetLamps == 5)
-		this.visionVisibility.animations.play('fifth', 5, false);
-	else if(litStreetLamps == 6)
-		this.visionVisibility.animations.play('sixth', 5, false);
-	else if(litStreetLamps > 6)
-		this.visionVisibility.animations.play('seventh', 5, false);
+	purifiedLeft = false; 
+	purifiedBelow = false;
+	
+	town2LampFill = 0;  
+	town2Visited = 0;
+	town2LampLit = false; 
+	townLeftLampFill = 0;  
+	townLeftVisited = 0;
+	townLeftLampLit = false; 
+	purifiedLeft = false; 
+	leftEnemyAlive = true;	
+	win = false;
 }
-
+// Game functions shared by all states 
 
 function statusBar() {
 		// Set up the bottom GUI 
@@ -232,7 +167,6 @@ function statusBar() {
 function health() {
 	hitEnemy.play(); 
 	lives-=1;	
-	//this.playerLives.text = lives + '/5';
 	statusBar();
 
 	if(left == true) {
@@ -244,23 +178,3 @@ function health() {
 		game.add.tween(player).to( {x:player.x-90}, 100, Phaser.Easing.Linear.None, true);
 	}
 }
-
-// function speechBubble(show) {
-// 	if(show == 0) {
-// 		this.speechBubble = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speech');
-// 		this.speechBubble.tint = 0xD0D0D0;
-// 		this.speechBubble.visible = false; 
-// 		this.speechArrow = game.add.sprite(this.civilian.centerX-250, this.civilian.centerY - 300, 'speechArrow');
-// 		this.speechArrow.tint = 0xD0D0D0;
-// 		this.speechArrow.visible = false; 
-// 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
-
-// 		this.next = game.add.text(this.speechBubble.x + 460, this.speechBubble.y + 160, '▼', {font: '30px Advent Pro', fill: '#000000'});
-// 		this.next.alpha = 1;
-// 		game.add.tween(this.next).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
-// 		this.next.visible = false;
-// 	} else {
-// 		this.speechBubble.visible = true;
-// 		this.speechArrow.visible = true;
-// 	}
-// }

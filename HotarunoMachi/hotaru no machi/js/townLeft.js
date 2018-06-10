@@ -142,6 +142,15 @@ var townLeftState = {
 		this.portalToTown = portal.create(2100, game.world.centerY-30, 'fAssets', 'portal');
 		game.add.tween(this.portalToTown).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
 
+		//Firefly respawner 
+		timer = game.time.create();
+		timer.loop(10500, function() { 
+			var spawn = game.rnd.integerInRange(1, 10);
+			if(spawn%2==0) 
+				this.spawnFirefly(game.rnd.integerInRange(1,2));
+		}, this);
+		timer.start(); 
+
 		//Player
 		player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0004', 150, game.world.height-175);
 		game.add.existing(player);
@@ -209,7 +218,7 @@ var townLeftState = {
 		//console.log(this.enemy.body.velocity.x);
 			//game.add.tween(this.civilian).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
-			civText = game.add.text(x-250, y-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			civText = game.add.text(x-250, y-55, '<Press Space to Interact with Me!>',{font: '38px Advent Pro', fill: '#E5D6CE'});
 		//	game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 			game.add.tween(civText).to( { alpha: 0.5 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 		}
@@ -406,22 +415,6 @@ var townLeftState = {
 
 		// collision detection for civilians becoming rotten apples 
   		game.physics.arcade.overlap(this.civilian, this.toxicPuddle, this.rottenApple);
-
-		// ----------------------------------------------------------------------
-
-		// dat.gui stuff 
-	    this.game.physics.arcade.collide(player, this.collisionLayer);
-
-	    //Here we update the player variables with the adjusted settings in dat.gui
-	    player.xSpeed = settings.moveSpeed;
-	    player.ySpeed = settings.jumpSpeed;
-	    //player.body.gravity.y = settings.gravity;
-
-		// ----------------------------------------------------------------------
-
-	    // Reset the players velocity (movement)
-	    // player.body.velocity.x = 0;
-	    // player.body.velocity.y = 0;
 
 	    if(leftEnemyAlive == true) {
 	    	if(this.enemy.x == 50)

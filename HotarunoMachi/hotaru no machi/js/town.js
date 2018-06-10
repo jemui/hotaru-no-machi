@@ -1,6 +1,12 @@
-var town2LampFill = 0;  
-var town2Visited = 0;
-var town2LampLit = false; 
+var town2LampFill = 0;  // keep track of how full the lamp is 
+var town2Visited = 0;	// keep track of times visited for firefly spawning
+var town2LampLit = false;	// helps determine if a lit street lamp is still lit in the map upon revisiting the map
+
+var town2BottomLampFill = 0;  
+var town2BottomVisited = 0;
+var town2BottomLampLit = false; 
+var purifiedBelow = false;
+
 var yCenter = 350;
 // 30-32 gradient images to use. array of 4 street lamps. stores litStreetLamps 
 // create animations in the states. animation played depends on # lit lamps and position in array
@@ -19,7 +25,7 @@ var townState = {
 			this.background = game.add.sprite(0, -64, 'endGame', 'townBackgroundEnd');
 			this.background = game.add.sprite(1200, -64, 'endGame', 'townBackgroundEnd');
 
-			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			bright = game.add.text(player.x+50, player.y-100, 'Maybe I should head back to the Breakfast Bar now that the town is bright again.',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(bright).to( { y: player.y-150 }, 5500, Phaser.Easing.Linear.None, true);
 			game.add.tween(bright).to( { alpha: 0 }, 5500, Phaser.Easing.Linear.None, true);
 		}
@@ -62,13 +68,16 @@ var townState = {
 		this.rightBound = bounds.create(2400, yCenter+100, 'spriteBounds'); 
 		this.rightBound.body.immovable = true;
 
+		// hitbox
+		hitBox = game.add.group();
+		hitBox.enableBody = true;
 
 		// Add street lamp.
 		streetLampGroup = game.add.group();
 		streetLampGroup.enableBody = true; 
 
 		if(town2Visited < 1) {
-			this.spawnStreetLamp(1720);
+			this.spawnStreetLamp(1720, yCenter-150);
 			this.spawnFirefly(game.rnd.integerInRange(3,8));
 
 			// shopEntranceSignal = game.add.text(1440, yCenter-210, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
@@ -85,18 +94,34 @@ var townState = {
 		} 
 		// if town streetlamp is already lit, keep it on
 		else if(town2Visited >= 0 && town2LampLit == true) {
-			this.spawnStreetLamp(1720);
+			this.spawnStreetLamp(1720, yCenter-150);
 		} else {
-			this.spawnStreetLamp(1720);		//gets reset :c when leaving map.. 
+			this.spawnStreetLamp(1720, yCenter-150);		//gets reset :c when leaving map.. 
 			this.spawnFirefly(game.rnd.integerInRange(5,7));
 		}
+		// townbelow conditions here
 
+		// toxic puddle
+		puddle = game.add.group();
+		puddle.enableBody = true;
+
+		// create toxic puddle if the puddle has not been purified yet
+		if(purifiedBelow == false) {
+			this.toxicPuddle = puddle.create(1400, 1250, 'fAssets', 'singlePuddle');
+			this.toxicPuddle.body.immovable = true;
+			this.toxicPuddle.body.setSize(100, 53, 50, 0);
+
+			this.puddleHitBox = hitBox.create(this.toxicPuddle.x-250, this.toxicPuddle.y,'puddleHitBox');
+			this.puddleHitBox.scale.setTo(2.5,1);
+			this.puddleHitBox.body.immovable = true;
+		}
 
 		// Enemy group 
 		enemies = game.add.group();
 		enemies.enableBody = true;
 
-		//this.spawnEnemy(1);
+		this.spawnEnemy(1200, 1100);
+
 		civ = game.add.group();
 		civ.enableBody = true;
 
@@ -113,7 +138,7 @@ var townState = {
 		this.speechArrow.visible = false; 
 		this.dialogue = game.add.text(this.speechBubble.x+5, this.speechBubble.y+5, '', {font: '30px Advent Pro', fill: '#000000', wordWrap: true, wordWrapWidth: 490});
 
-		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '25px Advent Pro', fill: '#000000'});
+		this.next = game.add.text(this.speechBubble.x+470, this.speechBubble.y+170, '▼',{font: '38px Advent Pro', fill: '#000000'});
 		game.add.tween(this.next).to( { alpha: 0.5 }, 500, Phaser.Easing.Linear.None, true, {alpha: 1}, 500, Phaser.Easing.Linear.None, true);
 		this.next.visible = false;
 
@@ -130,7 +155,6 @@ var townState = {
 		timer.loop(10500, function() { 
 			//console.log('loop event at: ' + timer.ms);
 			var spawn = game.rnd.integerInRange(1, 10);
-			console.log(spawn);
 			if(spawn%2==0) 
 				this.spawnFirefly(game.rnd.integerInRange(1,2));
 		}, this);
@@ -187,7 +211,6 @@ var townState = {
 		// Inventory
 		statusBar();
 
-		//console.log(game.width);
 		game.camera.follow(player);	// Game camera follows player.
 	},
 	shop: function() {
@@ -198,15 +221,13 @@ var townState = {
 		for(var i = 0; i < n; i++ ){
 			this.civilian = civ.create(x, y, 'fAssets', 'civilianSprite0001');
 
-
 			this.civilian.animations.add('right',['civilianSprite0002', 'civilianSprite0003'], 5, true);
 			this.civilian.animations.add('left',['civilianSprite0005', 'civilianSprite0006'], 5, true);
-		//console.log(this.enemy.body.velocity.x);
-			game.add.tween(this.civilian).to( { x: x+200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, x-300, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+			game.add.tween(this.civilian).to( { x: x+200 }, 5000, Phaser.Easing.Linear.None, true, x-300, 5000, Phaser.Easing.Linear.None, true);
 
 
-			this.civText = game.add.text(this.civilian-300, this.civilian.y-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
-			game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, x-300, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
+			this.civText = game.add.text(this.civilian.x-50, this.civilian.y-55, '<Press Space to Interact with Me!>',{font: '38px Advent Pro', fill: '#E5D6CE'});
+			game.add.tween(this.civText).to( { x: x+200 }, 5000, Phaser.Easing.Linear.None, true, x-300, 5000, Phaser.Easing.Linear.None, true);
 			//game.add.tween(civText).to( { alpha: 0 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
 			//game.add.tween(this.enemy).to( { x: game.rnd.integerInRange(0,1200) }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
@@ -219,34 +240,26 @@ var townState = {
 			//this.civText.text = speech[1]; 
 		}
 	}, 
-	spawnEnemy: function(n) {
-		for(var i = 0; i < n; i++ ){
-			this.enemy = enemies.create(0, yCenter+55, 'fAssets', 'enemySprite0001');
+	spawnEnemy: function(x, y) {
+		this.enemy = enemies.create(x, y, 'fAssets', 'enemySprite0001');
+		//this.enemy.scale.x *= -1;
+		this.enemy.animations.add('right',['enemySprite0002', 'enemySprite0003'], 5, true);
+		this.enemy.animations.add('left',['enemySprite0005', 'enemySprite0006'], 5, true);
+		game.add.tween(this.enemy).to( { x: x+400 }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, x-400, game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
 
-			//this.enemy = enemies.create(game.rnd.integerInRange(100,600), yCenter+55, 'fAssets', 'enemySprite0001');
-			//this.enemy.scale.x *= -1;
-			this.enemy.animations.add('right',['enemySprite0002', 'enemySprite0003'], 5, true);
-			this.enemy.animations.add('left',['enemySprite0005', 'enemySprite0006'], 5, true);
-		//console.log(this.enemy.body.velocity.x);
-			game.add.tween(this.enemy).to( { x: 1200 }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
-
-			//game.add.tween(this.enemy).to( { x: game.rnd.integerInRange(0,1200) }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
-
-		}
+		//game.add.tween(this.enemy).to( { x: game.rnd.integerInRange(0,1200) }, game.rnd.integerInRange(3000,5000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(2000,5000), Phaser.Easing.Linear.None, true);
 	},
 	light: function(x,y) {
 		this.streetLamp.animations.play('light');
 	},
-	spawnStreetLamp: function(x) {
-		this.streetLamp = streetLampGroup.create(x, yCenter-150, 'fAssets', 'streetLampDark');
-		//this.streetLamp.scale *= -1;
-		//this.streetLamp.contain = 0; 
-		//this.streetLamp.n? + counter
+	spawnStreetLamp: function(x,y) {
+		this.streetLamp = streetLampGroup.create(x, y, 'fAssets', 'streetLampDark');
 		this.streetLamp.animations.add('light', ['streetLampLit'], 30, true);
+
 		if(town2LampLit == true) {
 			full = true;
 			this.streetLamp.animations.play('light');
-		}else {
+		} else {
 			full= false; 
 		}
 	},
@@ -296,11 +309,9 @@ var townState = {
 		if(fireflies == 5) {
 			full = true;
 
-			fillText = game.add.text(player.x-150, player.y-150, 'Your lantern is now full. Try storing fireflies in street lamps!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			fillText = game.add.text(player.x-150, player.y-150, 'Your lantern is now full. Try storing fireflies in street lamps!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fillText).to( { y: player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 3500, Phaser.Easing.Linear.None, true);
-
-			console.log('Your lantern is now full. Try storing fireflies in street lamps!'); 
 		}
 		statusBar();	// update inventory
 	},
@@ -315,19 +326,16 @@ var townState = {
 
 			full = false;
 
-			fillText = game.add.text(player.x+50, player.y-100, 'StreetLamp contains ' + town2LampFill + '/5 fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			fillText = game.add.text(player.x+50, player.y-100, 'StreetLamp contains ' + town2LampFill + '/5 fireflies.',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fillText).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(fillText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
-			console.log('StreetLamp contains ' + town2LampFill + ' fireflies.');
 			var temp = true;
 		} 
 		else if(fireflies == 0 && game.input.keyboard.justPressed(Phaser.Keyboard.F)) {
-			noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			noFirefliesLeft = game.add.text(player.x+50, player.y-100, 'You do not have any more fireflies.',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(noFirefliesLeft).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(noFirefliesLeft).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
-
-			console.log('You do not have any more fireflies.'); 
 		}
 
 		if(town2LampFill == 5 && temp == true) { //temp
@@ -345,12 +353,11 @@ var townState = {
 			else
 				this.visionVisibility.animations.play('second', 5, false);
 
-			filledText = game.add.text(player.x+50, player.y-50, 'This street lamp is now filled!',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			filledText = game.add.text(player.x+50, player.y-50, 'This street lamp is now filled!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
 			game.add.tween(filledText).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
 
 			town2LampLit = true;
-			console.log('This street lamp is now filled!\nGood job!'); 
 		}
 	},
 
@@ -369,7 +376,14 @@ var townState = {
 			player.y = 1200; 
 		}
 	},
-	
+	rottenApple: function(civilian, toxicPuddle) {
+		// var civX = civilian.x;
+		// var civY = civilian.y; 
+		civilian.kill(); 
+
+		// this.spawnEnemy(toxicPuddle.x, toxicPuddle.y, 1);
+		// need to spawn enemy in place (don't cann function )
+	},
 	update: function() {
 	   // Read input from keyboard to move the player
 	    cursors = game.input.keyboard.createCursorKeys();
@@ -413,31 +427,41 @@ var townState = {
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
   		//game.physics.arcade.overlap(player, civ, this.civDialogue);
 
-		// ----------------------------------------------------------------------
+		// collision detection for civilians becoming rotten apples 
+  		game.physics.arcade.overlap(this.civilian, this.toxicPuddle, this.rottenApple);
 
-		// dat.gui stuff 
-	    this.game.physics.arcade.collide(player, this.collisionLayer);
+  		// enemy walking animations
+  		 if( this.enemy.x ==1200)
+	     	this.enemy.animations.play('right');
+	     else if( this.enemy.x ==1600)
+	     	this.enemy.animations.play('left');
 
-	    //Here we update the player variables with the adjusted settings in dat.gui
-	    player.xSpeed = settings.moveSpeed;
-	    player.ySpeed = settings.jumpSpeed;
-	    //player.body.gravity.y = settings.gravity;
-
-		// ----------------------------------------------------------------------
-
-	    // Reset the players velocity (movement)
-	    player.body.velocity.x = 0;
-	    player.body.velocity.y = 0;
-
-
-  		// if( this.enemy.x ==1200)
-	   //  	this.enemy.animations.play('left');
-	   //  else if( this.enemy.x ==0)
-	   //  	this.enemy.animations.play('right');
+	    // civilian walking animations
   		if( this.civilian.x == 1200)
 	    	this.civilian.animations.play('left');
 	    else if( this.civilian.x ==1000)
 	    	this.civilian.animations.play('right');
+
+  		// Removing Toxic Puddle
+  		if(purifiedBelow == false) {
+  			if(game.physics.arcade.overlap(player,this.puddleHitBox) && purificationMilk > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.ONE)) {
+				purifyText = game.add.text(player.x-150, player.y-150, 'You poured some purificationMilk onto the toxic puddle and it vanishes.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+				game.add.tween(purifyText).to( { y: player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
+				game.add.tween(purifyText).to( { alpha: 0 }, 3500, Phaser.Easing.Linear.None, true);
+
+  				this.toxicPuddle.kill();
+  				this.puddleHitBox.kill();
+
+  				purificationMilk--;
+  				statusBar();
+  				purifiedBelow = true;
+  			}
+  			else if (game.physics.arcade.overlap(player,this.puddleHitBox) && (purificationMilk == 0) && game.input.keyboard.justPressed(Phaser.Keyboard.ONE)) {
+				purifyText = game.add.text(player.x-150, player.y-150, 'You do not have any purificationMilk.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+				game.add.tween(purifyText).to( { y: player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
+				game.add.tween(purifyText).to( { alpha: 0 }, 3500, Phaser.Easing.Linear.None, true);
+  			}
+  		}
 
   		// Check if player is interacting with a citizen 
   		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && game.physics.arcade.overlap(player, this.civilian)) {
@@ -531,8 +555,8 @@ var townState = {
 	},
 	 render: function() {
 	 	//game.debug.spriteInfo(this.enemy, 32, 32);
-	 	//game.debug.body(this.spriteBounds); 
+	 	//game.debug.body(player); 
 	 	//game.debug.body(this.spriteBoundsRight); 
-	 	//game.debug.spriteInfo(player, 32, 32);
+	 game.debug.spriteInfo(player, 32, 32);
 	 }
 }

@@ -7,22 +7,23 @@ var titleState = {
 
 		//reset global variables upon returning to title
 		if(returnedToTitle > 0) {
-			lives = 5;
-			playerFF = 0;
-			fireflies = 0;
-			timesVisited = 0;
-			townVisited = 0;
-			townLampLit = false;
-			townLampFill = 0;
-			litStreetLamps = 0;
-			tutSpawned = false;
-			current = 0;
-			full = false; 
-			lanternSize = 5;
-		 	purificationMilk = 0;
-			healthJuice = 0;
-			proteinShake = 0;
-			purifiedLeft = false; 
+			resetVar();
+			// lives = 5;
+			// playerFF = 0;
+			// fireflies = 0;
+			// timesVisited = 0;
+			// townVisited = 0;
+			// townLampLit = false;
+			// townLampFill = 0;
+			// litStreetLamps = 0;
+			// tutSpawned = false;
+			// current = 0;
+			// full = false; 
+			// lanternSize = 5;
+		 // 	purificationMilk = 0;
+			// healthJuice = 0;
+			// proteinShake = 0;
+			// purifiedLeft = false; 
 		}
 		returnedToTitle++;
 		spashScreen = game.add.sprite(0,0, 'splashScreen');

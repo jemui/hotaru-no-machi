@@ -11,8 +11,11 @@ var civDialogueCounter = 0;
 
 var playState = {
 	create: function() {
-    	game.world.setBounds(0, 0, 2400, 700); // set bound of the game world. (x, y, width, height). Source: Phaser Tutorial
+    	game.world.setBounds(-1200, 0, 3600, 700); // set bound of the game world. (x, y, width, height). Source: Phaser Tutorial
 
+		this.background = game.add.sprite(0, -25, 'fAssets', 'townBackground');
+	//	this.background.anchor.set(0.5);
+		this.background.scale.x *= -1;
 		this.background = game.add.sprite(0, -64, 'fAssets', 'shopExterior');
 		this.background = game.add.sprite(2400, -25, 'fAssets', 'townBackground');
 		this.background.scale.x *= -1;
@@ -59,7 +62,7 @@ var playState = {
 		this.boundTop.body.immovable = true; 
 		this.boundTop.fixedToCamera = true;
 
-		this.leftBound = bounds.create(-100, game.world.centerY+100, 'spriteBounds'); 
+		this.leftBound = bounds.create(-1300, game.world.centerY+100, 'spriteBounds'); 
 		this.leftBound.body.immovable = true;
 
 		this.rightBound = bounds.create(2400, game.world.centerY+100, 'spriteBounds'); 
@@ -70,18 +73,18 @@ var playState = {
 		streetLampGroup.enableBody = true; 
 
 		// indicators for player 
-		shopEntranceSignal = game.add.text(300, game.world.centerY, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-		shopEntranceSignal.alpha = 0;
-	    game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+		shopEntranceSignal = game.add.text(200, game.world.centerY-30, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+	    game.add.tween(shopEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);
 		
-		fillInstruct = game.add.text(1650, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-		fillInstruct.alpha = 0;
-	    game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
+		LeftEntranceSignal = game.add.text(-990, game.world.centerY-50, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+	    game.add.tween(LeftEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);
+
+		fillInstruct = game.add.text(1750, game.world.centerY-220, "<F to Fill>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
+	    game.add.tween(fillInstruct).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);
 		
 		portalEntranceSignal = game.add.text(game.world.centerX+850, game.world.centerY-100, "<W to Enter>", {font: '38px Advent Pro', fill: '#FFEDE5'}); 
-		portalEntranceSignal.alpha = 0;
-	    game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0}, 1500, Phaser.Easing.Linear.None, true);
-	    
+	    game.add.tween(portalEntranceSignal).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);
+
 		if(townVisited < 1) {
 			this.spawnStreetLamp();
 			this.spawnFirefly(game.rnd.integerInRange(5,7));
@@ -98,10 +101,6 @@ var playState = {
 		enemies = game.add.group();
 		enemies.enableBody = true;
 
-
-	//	if (townEnemy == false)
-		//	this.spawnEnemy(1);
-
 		// Portals
 		portal = game.add.group();
 		portal.enableBody = true;
@@ -112,11 +111,11 @@ var playState = {
 		game.add.tween(this.portalToShop).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
 
 
-		this.portalToTown2 = portal.create(game.world.centerX+850, game.world.centerY-30, 'fAssets', 'portal');
+		this.portalToTown2 = portal.create(game.world.centerX+1300, game.world.centerY-30, 'fAssets', 'portal');
 		game.add.tween(this.portalToTown2).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
 
 
-		this.portalToTownLeft = portal.create(30, game.world.centerY+20, 'fAssets', 'portal');
+		this.portalToTownLeft = portal.create(-950, game.world.centerY+20, 'fAssets', 'portal');
 		this.portalToTownLeft.alpha = 1;
 		this.portalToTownLeft.scale.set(0.7);
 		game.add.tween(this.portalToTownLeft).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
@@ -146,8 +145,9 @@ var playState = {
 
 		//PlayerSprite
 		if (last == 'townLeft') {
-			player = new Player(game, 150, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
-		} else if( last == 'Shop') {
+			player = new Player(game, -950, game.world.height-175, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
+		} 
+		else if(last == 'Shop') {
 			player = new Player(game, 290, game.world.centerY+135, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		}		
 		 else  {
@@ -168,7 +168,6 @@ var playState = {
 		timer.loop(10500, function() { 
 			//console.log('loop event at: ' + timer.ms);
 			var spawn = game.rnd.integerInRange(1, 10);
-			console.log(spawn);
 			if(spawn%2==0) 
 				this.spawnFirefly(game.rnd.integerInRange(1,2));
 		}, this);
@@ -225,7 +224,7 @@ var playState = {
 
 
 			this.civilian.scale.x *= -1;
-			civText = game.add.text(x-250, y-55, '<Press Space to Interact with Me!>',{font: '25px Advent Pro', fill: '#E5D6CE'});
+			civText = game.add.text(x-300, y-55, '<Press Space to Interact with Me!>',{font: '38px Advent Pro', fill: '#E5D6CE'});
 		//	game.add.tween(this.civText).to( { x: 1200 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, game.rnd.integerInRange(game.world.centerX,game.width-64), game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 			game.add.tween(civText).to( { alpha: 0.5 }, game.rnd.integerInRange(5000, 7000), Phaser.Easing.Linear.None, true, {alpha: 1}, game.rnd.integerInRange(5000,7000), Phaser.Easing.Linear.None, true);
 
@@ -443,28 +442,6 @@ var playState = {
 	    game.physics.arcade.collide(player, bounds);
 		game.physics.arcade.collide(enemies, this.firefly2, this.killEnemy, null, this);
 
-		// ----------------------------------------------------------------------
-
-		// dat.gui stuff 
-	    this.game.physics.arcade.collide(player, this.collisionLayer);
-
-	    //Here we update the player variables with the adjusted settings in dat.gui
-	    player.xSpeed = settings.moveSpeed;
-	    player.ySpeed = settings.jumpSpeed;
-	    //player.body.gravity.y = settings.gravity;
-
-		// ----------------------------------------------------------------------
-
-	    // Reset the players velocity (movement)
-	    player.body.velocity.x = 0;
-	    player.body.velocity.y = 0;
-
-	    // Move back to tut by going left 
-	    if(player.x < -player.width) {
-	    	game.state.start('tutorial', true, false);
-	    	faceRight = true;
-	    	//music.stop();
-	    }
 
 	   	/******* ENEMY 8*********************888 
   		if( this.enemy.x ==1200)
