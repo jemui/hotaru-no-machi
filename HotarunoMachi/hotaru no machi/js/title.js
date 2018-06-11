@@ -3,7 +3,8 @@ var show = false;
 var titleState = {
 	// goes to title state when the game is done loading
 	create: function() {
-		// Bounds
+		game.stage.backgroundColor = "#000000";
+
 		screen = game.add.group(); 
 		screen.enableBody = true; 
 

@@ -12,7 +12,9 @@ var endState = {
 		var lineDec = game.add.text(game.world.centerX/3+35, game.world.centerY/4+15, '_____________________', {font: '40px Advent Pro', fill: '#E5D9C9'});
 		lineDec.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
 
-
+		screen = game.add.group(); 
+		screen.enableBody = true;
+		
 		var startButton = game.add.button(155, game.world.centerY/2+160, 'start', this.actionOnClick, this);
 		startButton.onInputOver.add(this.over, this.startButton);
 		startButton.onInputOut.add(this.out, this.startButton);
@@ -20,7 +22,7 @@ var endState = {
 		var creditsButton = game.add.button(155, game.world.centerY/2+240, 'credits', this.actionOnClick2, this);
 		creditsButton.onInputOver.add(this.over, this.creditsButton);
 		creditsButton.onInputOut.add(this.out, this.creditsButton);
-		
+
 		this.creditsScreen = screen.create(0,0, 'creditsScreen');
 		this.creditsScreen.visible = false;
 		// streetlamp
