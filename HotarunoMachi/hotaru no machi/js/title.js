@@ -3,8 +3,6 @@ var show = false;
 var titleState = {
 	// goes to title state when the game is done loading
 	create: function() {
-		// set the background color 
-
 		// Bounds
 		screen = game.add.group(); 
 		screen.enableBody = true; 
@@ -54,7 +52,6 @@ var titleState = {
 
 		this.visionVisibility = game.add.sprite(0,0, 'vision', 'gradient_000014');
 		this.visionVisibility.animations.add('light', ['gradient_000015','gradient_000016'], 5, true);
-
 
 		this.closeCredits = game.add.text(60,255, "<Press the Space bar to return to the title screen>", {font: '30px Advent Pro', fill: '#000000'}); 
 	    game.add.tween(this.closeCredits).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.4}, 1500, Phaser.Easing.Linear.None, true);

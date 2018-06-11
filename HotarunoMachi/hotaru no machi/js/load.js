@@ -30,8 +30,12 @@ var loadState = {
 
 		game.scale.refresh();
 
-		var loadingText = game.add.text(game.world.centerX, game.world.centerY, 'Loading...', {font: '40px Cambria', fill: '#033E54', align: 'center'});
+		game.stage.backgroundColor = "#F6F6F6";
+
+		var loadingText = game.add.text(game.world.centerX, game.world.centerY, 'Loading...', {font: '40px Cambria', fill: '#000000', align: 'center'});
 		loadingText.anchor.set(0.5);
+		loadingText.alpha = 0.3;
+		game.add.tween(loadingText).to( { alpha:1 }, 1500, Phaser.Easing.Linear.None, true, { alpha:0.3 }, 1500, Phaser.Easing.Linear.None, true);
 
 	    //  Load the Google WebFont Loader script
     	game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
@@ -77,6 +81,7 @@ var loadState = {
 		game.load.audio('shootFF', ['assets/audio/shootFF.ogg']);	
 		game.load.audio('buy', ['assets/audio/buy.ogg']);
 		game.load.audio('consume', ['assets/audio/consume.ogg']);
+
 	},
 
 	// goes to title state when the game is done loading
