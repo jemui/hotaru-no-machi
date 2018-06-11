@@ -58,7 +58,7 @@ var loadState = {
 		game.load.image('creditsScreen', 'assets/img/creditsScreen.png');
 
 		// Load texture atlas
-		//game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
+		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
 		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
 		game.load.atlas('fAssets', 'assets/img/FinalArtAssets.png', 'assets/img/FinalArtAssets.json');
 		game.load.atlas('endGame', 'assets/img/endGame.png', 'assets/img/endGame.json');
@@ -75,6 +75,8 @@ var loadState = {
 		game.load.audio('enemyDies', ['assets/audio/enemyDies.ogg']);
 		game.load.audio('hitEnemy', ['assets/audio/hitEnemy.ogg']);
 		game.load.audio('shootFF', ['assets/audio/shootFF.ogg']);	
+		game.load.audio('buy', ['assets/audio/buy.ogg']);
+		game.load.audio('consume', ['assets/audio/consume.ogg']);
 	},
 
 	// goes to title state when the game is done loading

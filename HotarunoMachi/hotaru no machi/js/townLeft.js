@@ -29,6 +29,7 @@ var townLeftState = {
 		shootFF = game.add.audio('shootFF');	
 		playerDies = game.add.audio('playerDies');
 		fillStreet = game.add.audio('fillStreet');
+		consume = game.add.audio('consume');
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -409,6 +410,7 @@ var townLeftState = {
 	    if(healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives < 5) {
 	    	healthJuice--;
 	    	lives = 5; 
+			consume.play();
 
 			var fullHealth = game.add.text(player.x+50, player.y-100, 'Your health is now full again!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fullHealth).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
@@ -429,6 +431,7 @@ var townLeftState = {
 	    if(proteinShake > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && lanternSize < 15) {
 	    	proteinShake--;
 	    	lanternSize += 5;
+			consume.play();
 
 			var bought = game.add.text(player.x-150, player.y-150, 'You can now collect up to '+lanternSize +' fireflies!',{font: '38px Advent Pro', fill: '#000000'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
@@ -479,7 +482,8 @@ var townLeftState = {
   		// Removing Toxic Puddle
   		if(purifiedLeft == false) {
   			if(game.physics.arcade.overlap(player,this.puddleHitBox) && purificationMilk > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.ONE)) {
-				purifyText = game.add.text(player.x-150, player.y-150, 'You poured some purificationMilk onto the toxic puddle and it vanishes.',{font: '25px Advent Pro', fill: '#E5D6CE'});
+  				consume.play();
+				purifyText = game.add.text(player.x-150, player.y-150, 'You poured some purification milk onto the toxic puddle and it vanishes.',{font: '25px Advent Pro', fill: '#E5D6CE'});
 				game.add.tween(purifyText).to( { y: player.y-150 }, 3500, Phaser.Easing.Linear.None, true);
 				game.add.tween(purifyText).to( { alpha: 0 }, 3500, Phaser.Easing.Linear.None, true);
 

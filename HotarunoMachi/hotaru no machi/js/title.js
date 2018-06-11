@@ -79,7 +79,7 @@ var titleState = {
 	// start button action
 	actionOnClick: function() {
 		if(show== false) {
-			game.state.start('tutorial'); //should add option to skip tutorial later
+			game.state.start('tutorial');
 			music = game.add.audio('bgm');
 			music.loopFull(0.3);
 			music.play();
@@ -94,12 +94,6 @@ var titleState = {
 		this.closeCredits.visible = true;
 	},
 	update: function() {
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.Q)) {
-			game.state.start('play');
-		}
-		if(game.input.keyboard.justPressed(Phaser.Keyboard.C)) {
-			game.state.start('win');
-		}
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 			this.startButton.alpha= 1;
 			this.creditsButton.alpha= 1;

@@ -19,6 +19,8 @@ var tutorialState = {
 		collectFF = game.add.audio('hitFF');
 		fillLamp = game.add.audio('fillLamp');
 		depositFF = game.add.audio('depositFF');
+		buy = game.add.audio('buy');
+		consume = game.add.audio('consume');
 
 		game.world.setBounds(0,0,1200,700);
 
@@ -27,7 +29,6 @@ var tutorialState = {
 		message.enableBody = true; 
 		this.envelope = message.create(-100, -100, 'endGame', 'envelope');
 		this.interact = game.add.text(this.envelope.x, this.envelope.y-750, '< Hit Space to read the envelope >',{font: '25px Advent Pro', fill: '#FFFFFF'});
-		//this.interact.visible = false;
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -93,18 +94,15 @@ var tutorialState = {
 	    	game.add.tween(this.shopDialogue).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, { alpha: 0 }, 1500, Phaser.Easing.Linear.None, true);
     	
     	} else {
-    		//this.envelope = game.add.sprite(game.world.centerX, game.world.centerY-95, 'endGame', 'envelope');
-    		//this.envelope = game.add.sprite(game.world.centerX, game.world.centerY+80, 'endGame', 'envelope');
     		this.envelope.x = game.world.centerX+100;
     		this.envelope.y = game.world.centerY+80;
 
     		this.envelope.enableBody = true;
     		this.envelope.immovable = true;
-    		//this.envelope.body.setSize(146, 500, 0,0);
 
+    		// Interact test with envelope
 			this.interact.x = this.envelope.x-100;
 			this.interact.y = this.envelope.y-50;
-			//this.interact.visible = true;
 	    	game.add.tween(this.interact).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
     	}
 
@@ -228,18 +226,7 @@ var tutorialState = {
 	    game.physics.arcade.collide(player, this.bottomGUI);
 	    game.physics.arcade.collide(player, objects);
 	    game.physics.arcade.overlap(player, this.portalToTown, this.town);
-	    //game.physics.arcade.collide(this.player, this.bound);
-	    //game.physics.arcade.collide(this.player, this.boundTop);
-// if(game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 
-// 	    	// toggle menu 
-// 	    	showMenu ? showMenu = false : showMenu = true;
-
-// 	    	 if(showMenu == false)
-// 	    	 	this.shopMenu.visible = false;
-// 	    	else
-// 	    	 	this.shopMenu.visible = true;
-// }
 	    // player can buy things from the shop after the first visit
 	    if(timesVisited > 1 && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR) && win == false) {
 	    	this.shopDialogue.text = 'Use the number keys (1-3) to buy your desired item.\nHit the space bar again to close the shop menu!'; 
@@ -253,7 +240,6 @@ var tutorialState = {
 	    	 	this.shopMenu.visible = true;
 		   }
 
-	    // insert message here
 	    if(win == true) {;
 	    	if(game.physics.arcade.overlap(player, this.envelope) && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 	    		this.readEnvelope();
@@ -262,6 +248,7 @@ var tutorialState = {
 
 	    // Buying items
 	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies >= 2) {
+	    	buy.play();
 	    	purificationMilk++;
 	    	//update text & subtract fireflies
 			if(fireflies == lanternSize) {
@@ -271,21 +258,18 @@ var tutorialState = {
 	    	fireflies=fireflies-2; 
 			statusBar();
 
-			//var bought = game.add.text(player.x-150, player.y-150, 'You bought purification milk. Close the menu and press 1 to use it.',{font: '25px Advent Pro', fill: '#000000'});
-	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
-
 	    	this.shopDialogue.text = 'Here is your purification milk.\nClose the menu and press 1 to use it here or anywhere outside.'; 
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies < 2) {
 			this.shopDialogue.text = 'It looks like you do not have enough fireflies.\nFireflies help keep our shop bright.';
-	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
 	    }
 	    // attemp to use purification milk 
 	    if(showMenu == false && healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives < 5) {
 			this.shopDialogue.text = 'purification Milk can be used to clear harmful puddles in your path.\nThere are no puddles here.';
 	    }
 
-
+	    // buy health juice
 	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && fireflies >=3) {
+	    	buy.play();
 	    	healthJuice++;
 	    	//update text & subtract fireflies
 			if(fireflies == lanternSize) {
@@ -295,27 +279,26 @@ var tutorialState = {
 	    	fireflies=fireflies-3; 
 			statusBar();
 
-			//var bought = game.add.text(player.x-150, player.y-150, 'You bought health juice.',{font: '25px Advent Pro', fill: '#000000'});
-	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
-
 	    	this.shopDialogue.text = 'Here is your health juice. Close the menu and press 2 to use it here or anywhere outside.\nAlso, health juice can only be used with your health is not full!'; 
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && fireflies < 3) {
 			this.shopDialogue.text = 'It looks like you do not have enough fireflies.\nFireflies help keep our shop bright.';
-	    	// game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
 	    }
 
 	    // use health juice
 	    if(showMenu == false && healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives < 5) {
 	    	healthJuice--;
 	    	lives = 5; 
+	    	consume.play();
 	    	statusBar();
 	    } else if(timesVisited > 0 && showMenu == false && healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives == 5) {
 			this.shopDialogue.text = 'It looks like your health is already full'; 
 	    }
 
-
+	    // buy protein shakes
 	    if(showMenu == true && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && fireflies >= 5) {
+	    	buy.play();
 	    	proteinShake++;
+
 	    	//update text & subtract fireflies
 			if(fireflies == lanternSize) {
 				full = false; 
@@ -333,6 +316,7 @@ var tutorialState = {
 	    if(showMenu == false && proteinShake > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.THREE)) {
 	    	proteinShake--;
 	    	lanternSize += 5;
+			consume.play();
 
 			var bought = game.add.text(player.x-150, player.y-150, 'You can now collect up to '+lanternSize +' fireflies!',{font: '25px Advent Pro', fill: '#000000'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);

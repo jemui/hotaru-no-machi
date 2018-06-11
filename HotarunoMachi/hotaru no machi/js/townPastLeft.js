@@ -27,6 +27,7 @@ var townPastLeftState = {
 		shootFF = game.add.audio('shootFF');	
 		playerDies = game.add.audio('playerDies');
 		fillStreet = game.add.audio('fillStreet');
+		consume = game.add.audio('consume');
 
 		// Add Firefly object to screen
 		object = game.add.group(); 
@@ -94,7 +95,6 @@ var townPastLeftState = {
 		 	player = new Player(game, player.x, player.y, 'fAssets', 'playerSprite0001', 150, game.world.height-175);
 		}
 
-		//player = new Player(game, 2200, game.world.height-175, 'fAssets', 'playerSprite0004', 150, game.world.height-175);
 		game.add.existing(player);
 
 
@@ -269,9 +269,7 @@ var townPastLeftState = {
 		if(game.input.keyboard.justPressed(Phaser.Keyboard.W))
 			game.state.start('town');
 	},
-	rottenApple: function(civilian, toxicPuddle) {
-		civilian.kill(); 
-	},
+
 	update: function() {
 	   // Read input from keyboard to move the player
 	    cursors = game.input.keyboard.createCursorKeys();
@@ -319,6 +317,7 @@ var townPastLeftState = {
 	    if(healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives < 5) {
 	    	healthJuice--;
 	    	lives = 5; 
+			consume.play();
 
 			var fullHealth = game.add.text(player.x+50, player.y-100, 'Your health is now full again!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fullHealth).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
@@ -339,6 +338,7 @@ var townPastLeftState = {
 	    if(proteinShake > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && lanternSize < 15) {
 	    	proteinShake--;
 	    	lanternSize += 5;
+			consume.play();
 
 			var bought = game.add.text(player.x-150, player.y-150, 'You can now collect up to '+lanternSize +' fireflies!',{font: '38px Advent Pro', fill: '#000000'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);

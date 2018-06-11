@@ -5,9 +5,6 @@ var townLampFill = 0;	// track if streetlamp in first town map is filled
 var townLampLit = false;
 var townEnemy = false;
 var civDialogueCounter = 0;
-//var town2LampFill = 0;  
-// 30-32 gradient images to use. array of 4 street lamps. stores litStreetLamps 
-// create animations in the states. animation played depends on # lit lamps and position in array
 
 var playState = {
 	create: function() {
@@ -23,7 +20,7 @@ var playState = {
 		this.background.scale.x *= -1;
 
 		if(litStreetLamps == totalLamps) {
-			this.background = game.add.sprite(0, -25, 'endGame', 'townBackground');
+			this.background = game.add.sprite(0, -25, 'endGame', 'townBackgroundEnd');
 
 			this.background.scale.x *= -1;
 			this.background = game.add.sprite(0, -64, 'endGame', 'shopExteriorEnd');
@@ -41,7 +38,7 @@ var playState = {
 		fillLamp = game.add.audio('fillLamp');
 		depositFF = game.add.audio('depositFF');
 		enemyDies = game.add.audio('enemyDies');
-		//playerDies = game.add.audio('playerDies');
+		consume = game.add.audio('consume');
 		hitEnemy = game.add.audio('hitEnemy');
 		shootFF = game.add.audio('shootFF');
 		fillStreet = game.add.audio('fillStreet');		
@@ -116,10 +113,8 @@ var playState = {
 		this.portalToShop.alpha = 1;
 		game.add.tween(this.portalToShop).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
 
-
 		this.portalToTown2 = portal.create(game.world.centerX+1300, game.world.centerY-30, 'fAssets', 'portal');
 		game.add.tween(this.portalToTown2).to( { alpha:0.3 }, 4000, Phaser.Easing.Linear.None, true, { alpha: 1}, 4000, Phaser.Easing.Linear.None, true);
-
 
 		this.portalToTownLeft = portal.create(-950, game.world.centerY+20, 'fAssets', 'portal');
 		this.portalToTownLeft.alpha = 1;
@@ -205,6 +200,9 @@ var playState = {
 		else if(litStreetLamps > 6)
 			this.visionVisibility.animations.play('seventh', 5, false);
 
+		if(litStreetLamps == totalLamps) {
+				this.visionVisibility.animations.play('seventh', 5, false);
+		}
 		// Add the status bar to the bottom
 		statusBar();
 
@@ -218,7 +216,6 @@ var playState = {
 	spawnCivilian: function(x, y, n) {
 		for(var i = 0; i < n; i++ ){
 			this.civilian = civ.create(x, y, 'fAssets', 'civilianSprite0001');
-			//this.civilian.anchor.set(0.5);
 			this.civilian.body.setSize(333, 192, -100, 0); //(width, height, offsetX, offsetY)
 
 			this.civilian.animations.add('right',['civilianSprite0002', 'civilianSprite0003'], 5, true);
@@ -424,6 +421,7 @@ var playState = {
 	    if(healthJuice > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.TWO) && lives < 5) {
 	    	healthJuice--;
 	    	lives = 5; 
+			consume.play();
 
 			var fullHealth = game.add.text(player.x+50, player.y-100, 'Your health is now full again!',{font: '38px Advent Pro', fill: '#E5D6CE'});
 			game.add.tween(fullHealth).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
@@ -444,6 +442,7 @@ var playState = {
 	    if(proteinShake > 0 && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && lanternSize < 15) {
 	    	proteinShake--;
 	    	lanternSize += 5;
+			consume.play();
 
 			var bought = game.add.text(player.x-150, player.y-150, 'You can now collect up to '+lanternSize +' fireflies!',{font: '38px Advent Pro', fill: '#000000'});
 			game.add.tween(filledText).to( { y: player.y-100 }, 2500, Phaser.Easing.Linear.None, true);
