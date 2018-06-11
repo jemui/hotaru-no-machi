@@ -21,7 +21,7 @@ var lanternSize = 5;
 var purificationMilk = 0;
 var healthJuice = 0;
 var proteinShake = 0;
-var totalLamps = 3
+var totalLamps = 4;
 var win = false;
 
 var loadState = {
@@ -45,24 +45,25 @@ var loadState = {
 		game.load.spritesheet('resume', 'assets/img/resume.png', 270, 57);
 		game.load.spritesheet('title', 'assets/img/title.png', 270, 57);
 		game.load.image('bottom', 'assets/img/bar.png');
-		game.load.image('menu', 'assets/img/menu.png');
+		game.load.image('menu', 'assets/img/menu.png'); //pause menu
 
 		// game.load.image('player', 'assets/img/player.png');
 		game.load.image('puddleHitBox', 'assets/img/puddleHitBox.png');
 		game.load.image('shopMenu', 'assets/img/shopMenu.png');
-		game.load.image('light', 'assets/img/light.png');
 		game.load.image('bound', 'assets/img/bound.png');
 		game.load.image('speech', 'assets/img/speechBubble.png');
 		game.load.image('speechArrow', 'assets/img/speechBubbleArrow.png');
 		game.load.image('spriteBounds', 'assets/img/spriteBounds.png');
 		game.load.image('splashScreen', 'assets/img/splashScreen.png');
+		game.load.image('creditsScreen', 'assets/img/creditsScreen.png');
 
 		// Load texture atlas
-		game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
+		//game.load.atlas('assets', 'assets/img/placeholderArt.png', 'assets/img/placeholderArt.json');
 		game.load.atlas('vision', 'assets/img/gradient.png', 'assets/img/gradient.json');
 		game.load.atlas('fAssets', 'assets/img/FinalArtAssets.png', 'assets/img/FinalArtAssets.json');
 		game.load.atlas('endGame', 'assets/img/endGame.png', 'assets/img/endGame.json');
 		game.load.atlas('fade', 'assets/img/fade.png', 'assets/img/fade.json');
+		game.load.atlas('finalAssets', 'assets/img/finalAssets.png', 'assets/img/finalAssets.json');
 
 		// Load audio
 		game.load.audio('bgm', ['assets/audio/bkgdMusic.ogg']);

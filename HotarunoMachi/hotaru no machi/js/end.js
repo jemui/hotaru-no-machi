@@ -13,11 +13,11 @@ var endState = {
 		lineDec.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
 
 
-		var startButton = game.add.button(155, game.world.centerY/2+160, 'start', this.actionOnClick, this);
+		var startButton = game.add.button(game.world.centerX, game.world.centerY/2+160, 'start', this.actionOnClick, this);
 		startButton.onInputOver.add(this.over, this.startButton);
 		startButton.onInputOut.add(this.out, this.startButton);
 
-		var creditsButton = game.add.button(155, game.world.centerY/2+240, 'credits', this.actionOnClick2, this);
+		var creditsButton = game.add.button(game.world.centerX, game.world.centerY/2+240, 'credits', this.actionOnClick2, this);
 		creditsButton.onInputOver.add(this.over, this.creditsButton);
 		creditsButton.onInputOut.add(this.out, this.creditsButton);
 
@@ -46,9 +46,7 @@ var endState = {
 	},
 
 	over: function(button) {
-		//button.tint = 0x6D5B5B;
 		button.alpha = 0.7;
-    //	button.frame = 1;
 	},
 
 	out: function(button) {
@@ -59,30 +57,6 @@ var endState = {
 	actionOnClick: function() {
 		//reset game variables
 		resetVar();
-		// lives = 5;
-		// playerFF = 0;
-		// fireflies = 0;
-		// timesVisited = 0;
-		// townVisited = 0;
-		// townLampLit = false;
-		// townLampFill = 0;
-		// litStreetLamps = 0;
-		// tutSpawned = false;
-		// current = 0;
-		// full = false; 
-		// lanternSize = 5;
-	 // 	purificationMilk = 0;
-		// healthJuice = 0;
-		// proteinShake = 0;
-		// purifiedLeft = false; 
-		// town2LampFill = 0;  
-		// town2Visited = 0;
-		// town2LampLit = false; 
-		// townLeftLampFill = 0;  
-		// townLeftVisited = 0;
-		// townLeftLampLit = false; 
-		// purifiedLeft = false; 
-		// leftEnemyAlive = true;
 
 		//stop playing audio
 		game.sound.stopAll();

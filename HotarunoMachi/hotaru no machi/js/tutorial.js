@@ -257,11 +257,6 @@ var tutorialState = {
 	    if(win == true) {;
 	    	if(game.physics.arcade.overlap(player, this.envelope) && game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR)) {
 	    		this.readEnvelope();
-
-				//shopMessage = game.add.text(player.x+50, player.y-100, 'To Be Implemented Soon!',{font: '25px Advent Pro', fill: '#E5D6CE'});
-				//game.add.tween(shopMessage).to( { y: player.y-150 }, 2500, Phaser.Easing.Linear.None, true);
-				//game.add.tween(shopMessage).to( { alpha: 0 }, 2500, Phaser.Easing.Linear.None, true);
-	    		//console.log('To Be Implemented Soon!');
 	    	}
 	    }
 
@@ -279,7 +274,7 @@ var tutorialState = {
 			//var bought = game.add.text(player.x-150, player.y-150, 'You bought purification milk. Close the menu and press 1 to use it.',{font: '25px Advent Pro', fill: '#000000'});
 	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
 
-	    	this.shopDialogue.text = 'Here is your purification milk. Close the menu and press 1 to use it here or anywhere outside.'; 
+	    	this.shopDialogue.text = 'Here is your purification milk.\nClose the menu and press 1 to use it here or anywhere outside.'; 
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.ONE) && fireflies < 2) {
 			this.shopDialogue.text = 'It looks like you do not have enough fireflies.\nFireflies help keep our shop bright.';
 	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
@@ -325,17 +320,13 @@ var tutorialState = {
 			if(fireflies == lanternSize) {
 				full = false; 
 			}
-	    	//shootFF.play(); 
+
 	    	fireflies=fireflies-5; 
 			statusBar();
-
-			//var bought = game.add.text(player.x-150, player.y-150, 'You bought a storage upgrade',{font: '25px Advent Pro', fill: '#000000'});
-	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
 
 	    	this.shopDialogue.text = 'Here is your protein shake for upgrading the total amount of fireflies you can hold.\nClose the menu and press 3 to use it here or anywhere outside.'; 
 	    } else if(showMenu==true && game.input.keyboard.justPressed(Phaser.Keyboard.THREE) && fireflies < 5) {
 			this.shopDialogue.text = 'It looks like you do not have enough fireflies.\nFireflies help keep our shop bright.';
-	    	//game.add.tween(bought).to( { alpha: 1 }, 1500, Phaser.Easing.Linear.None, true, {alpha: 0.3}, 1500, Phaser.Easing.Linear.None, true);
 	    }
 
 	    // use protein shake
@@ -371,10 +362,4 @@ var tutorialState = {
 	        this.dialogueOnClick();
 
 	},
-	 render: function() {
-	 	// if(win == true) {
-	 	 	// game.debug.body(this.envelope); 
-	 	// }
-	// 	game.debug.spriteInfo(this.player, 32, 32);
-	 }
 }

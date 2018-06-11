@@ -120,6 +120,11 @@ function resetVar() {
 	townLeftLampLit = false; 
 	purifiedLeft = false; 
 	leftEnemyAlive = true;	
+
+    townPastLeftLampFill = 0;  
+    townPastLeftVisited = 0;
+    townPastLeftLampLit = false; 
+
 	win = false;
 }
 // Game functions shared by all states 

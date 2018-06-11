@@ -10,8 +10,6 @@ game.state.add('play', playState);
 game.state.add('town', townState);
 game.state.add('townLeft', townLeftState);
 game.state.add('townPastLeft', townPastLeftState);
-game.state.add('townRight', townRightState);
-game.state.add('townPastRight', townPastRightState);
 game.state.add('end', endState);
 game.state.add('win', winState);
 
